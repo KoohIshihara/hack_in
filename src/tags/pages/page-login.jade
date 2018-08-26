@@ -1,0 +1,63 @@
+page-login
+  div.wrap-page.f.fh
+    div.container-main
+      h2.logo.mb40 Hack In
+      div.f.fc.mb20
+        p.with Sign in / up with
+      div.wrap-buttons
+        a.wrap-login-fb.f.fm
+          img(src='./img/icon/fb.svg')
+          div.wrap-text
+            p Facebook
+
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      .wrap-page {
+        width: 100%;
+        height: 100%;
+        background: @primaryBg;
+        .container-main {
+          width: 180px;
+          .logo {
+            color: @primaryBlack;
+            font-size: 40px;
+            font-weight: lighter;
+            text-align: center;
+          }
+          .with {
+            color: @primaryGray;
+            font-weight: lighter;
+            text-align: center;
+          }
+          .wrap-login-fb {
+            padding: 8px 24px;
+            border: solid 0.5px @primaryBlack;
+            border-radius: 3px;
+            img {
+              width: 24px;
+            }
+            .wrap-text {
+              width: 100%;
+              p {
+                text-align: center;
+                font-size: 16px;
+                letter-spacing: 1px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.on('mount', function(){
+
+      
+    });
+    
