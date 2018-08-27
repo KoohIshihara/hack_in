@@ -27,6 +27,11 @@ util-header
 
     this.status = opts.status;
 
+    this.on('mount', function(){
+      debugger
+    });
+    
+
     /*
     switch (opts.status){
       case 'normal':
