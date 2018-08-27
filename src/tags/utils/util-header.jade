@@ -1,0 +1,41 @@
+util-header
+  div.wrap-util.f.fm.flex-between
+    div.normal(if="{status == 'normal'}")
+      p test
+
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      position: fixed;
+      z-index: 101;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      border-bottom: solid 0.6px rgba(0,0,0,0.2);
+      background: @secondaryBg;
+      /*filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.6));*/
+      .wrap-util {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+  script.
+
+    this.status = opts.status;
+
+    /*
+    switch (opts.status){
+      case 'normal':
+        this.leftIconSrc = '';
+        this.rightIconSrc = '';
+      break;
+
+      case 'modal':
+
+      break;
+    }
+    */

@@ -18,7 +18,58 @@ page-global-timeline
     var self = this;
 
     this.on('mount', function(){
-
-      
+      $('util-now-loading').fadeOut(400);
     });
+
+    async function checkSignUp(){
+      riot.isNewUser = true;
+      
+      // userDataがdbにあるか確認
+      await service.db.collection('users')
+        .where("uid", "==", session.user.uid)
+        .get()
+        .then(function(querySnapshot) {
+          var isNewUser = false;
+          querySnapshot.forEach(function(doc) {
+            //console.log(doc.id, " => ", doc.data());
+            if(doc.data().uid == session.user.uid){ 
+              riot.isNewUser = false;
+            }
+          });
+        }).catch(function(error) {
+          console.log("Error getting documents: ", error);
+        });
+
+      console.log('isNewUser', riot.isNewUser);
+
+      // Sign Up だったらユーザーデータをput
+      if(riot.isNewUser){
+        var user = session.user;
+
+        var userObj = {
+          name: user.displayName,
+          email: user.email,
+          imgUrl: user.photoURL + '?width=892&amp;height=892',
+          uid: user.uid,
+          hackedUid: user.uid,
+          auth_token: session.token,
+        };
+
+        await service.db.collection("users").add(userObj)
+          .then(function(docRef) {
+            console.log("Document written with ID: ", docRef.id);
+          })
+          .catch(function(error) {
+            console.error("Error adding document: ", error);
+            alert('Failed to Sign Up');
+            logout();
+          });
+      }
+    }
     
+    // ログイン/ログアウトを押してから来た時
+    if('user' in session){
+      
+      checkSignUp();
+      
+    } // if() // ログイン/ログアウトを押してから来た時

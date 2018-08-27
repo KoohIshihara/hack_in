@@ -5,7 +5,10 @@ app
     a(href="#about") About
     br
     a(href="#test/test") Modal Test Link
-    
+  header
+    util-header(status = '{headerStatus}')
+  util-footer
+  util-now-loading
   div.wrap-content
     content
     modal-content
@@ -68,6 +71,8 @@ app
 
     var self = this;
 
+    this.headerStatus = 'normal';
+
     this.contents = {
       test: {
         title: 'title',
@@ -75,3 +80,52 @@ app
         label: 'link label',
       },
     };
+
+    this.on('mount', function(){
+      /*
+      async function checkSignUp(){
+        riot.isNewUser = true;
+        // userDataがdbにあるか確認
+        await service.db.collection('users')
+        .where("id", "==", session.dataOfSocialLogin.user.uid)
+        .get()
+        .then(function(querySnapshot) {
+          var isNewUser = false;
+          querySnapshot.forEach(function(doc) {
+            //console.log(doc.id, " => ", doc.data());
+            if(doc.id) riot.isNewUser = false;
+          });        
+        }).catch(function(error) {
+          console.log("Error getting documents: ", error);
+        });
+
+        // Sign Up だったらユーザーデータをput
+        if(riot.isNewUser){
+          var user = session.dataOfSocialLogin.user;
+
+          var userObj = {
+            name: user.displayName,
+            email: user.email,
+            imgUrl: user.photoUrl + '?width=892&amp;height=892',
+            id: user.uid,
+            auth_token: session.dataOfSocialLogin.credential.accessToken,
+          };
+
+          await service.db.collection("users").add(userObj)
+          .then(function(docRef) {
+            console.log("Document written with ID: ", docRef.id);
+          })
+          .catch(function(error) {
+            console.error("Error adding document: ", error);
+            alert('Failed to Sign Up');
+            logout();
+          });
+        }
+      }
+      
+      // ログイン/ログアウトを押してから来た時
+      if('dataOfSocialLogin' in session){
+        checkSignUp();
+      } // if() // ログイン/ログアウトを押してから来た時
+      */
+    });
