@@ -65,4 +65,5 @@ riot.route(function(tagName) {
 
 riot.route.start(true);
 
-var tags = riot.mount('app');
+// index.jsのonAuthStateChangedで呼び出すことにした。
+// var tags = riot.mount('app');

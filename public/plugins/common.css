@@ -2,71 +2,47 @@
 
 
 h1 {
-  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+  font-family: Avenir,"Open Sans","Helvetica Neue",Helvetica,Arial,Verdana,Roboto,"游ゴシック","Yu Gothic","游ゴシック体","YuGothic","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","Meiryo UI","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
 }
 
 h2 {
-  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+  font-family: Avenir,"Open Sans","Helvetica Neue",Helvetica,Arial,Verdana,Roboto,"游ゴシック","Yu Gothic","游ゴシック体","YuGothic","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","Meiryo UI","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
 }
 
 h3 {
-  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+  font-family: Avenir,"Open Sans","Helvetica Neue",Helvetica,Arial,Verdana,Roboto,"游ゴシック","Yu Gothic","游ゴシック体","YuGothic","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","Meiryo UI","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
 }
 
 p {
-  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
-  font-size: 16px;
+  font-family: Avenir,"Open Sans","Helvetica Neue",Helvetica,Arial,Verdana,Roboto,"游ゴシック","Yu Gothic","游ゴシック体","YuGothic","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","Meiryo UI","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
 }
 
 span {
-  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+  font-family: Avenir,"Open Sans","Helvetica Neue",Helvetica,Arial,Verdana,Roboto,"游ゴシック","Yu Gothic","游ゴシック体","YuGothic","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","Meiryo UI","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
 }
 
 li {
-  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+  font-family: Avenir,"Open Sans","Helvetica Neue",Helvetica,Arial,Verdana,Roboto,"游ゴシック","Yu Gothic","游ゴシック体","YuGothic","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","Meiryo UI","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
 }
 
 a {
-  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+  font-family: Avenir,"Open Sans","Helvetica Neue",Helvetica,Arial,Verdana,Roboto,"游ゴシック","Yu Gothic","游ゴシック体","YuGothic","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","Meiryo UI","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
 }
 
-
-/*
-html {
-  overflow-y: hidden;
-}
-
-h1 {
-  font-family: "Iowan Old Style", 游明朝, YuMincho, "Hiragino Mincho ProN", Meiryo, serif;
-}
-
-h2 {
-  font-family: "Iowan Old Style", 游明朝, YuMincho, "Hiragino Mincho ProN", Meiryo, serif;
-  font-size: 20px;
-  color: #2a2a2a;
-}
-
-h3 {
-  font-family: "Iowan Old Style", 游明朝, YuMincho, "Hiragino Mincho ProN", Meiryo, serif;
-}
-
-p {
-  font-family: "Iowan Old Style", 游明朝, YuMincho, "Hiragino Mincho ProN", Meiryo, serif;
-  font-size: 16px;
-}
-
-span {
-  font-family: "Iowan Old Style", 游明朝, YuMincho, "Hiragino Mincho ProN", Meiryo, serif;
-}
-
-li {
-  font-family: "Iowan Old Style", 游明朝, YuMincho, "Hiragino Mincho ProN", Meiryo, serif;
-}
-
-a {
-  font-family: "Iowan Old Style", 游明朝, YuMincho, "Hiragino Mincho ProN", Meiryo, serif;
-}
-*/
 
 .en {
   display: block;
