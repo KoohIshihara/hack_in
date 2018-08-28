@@ -75,16 +75,30 @@ util-header
           if(value='') return;
 
           var postObj = {
-            writerId: session.user.uid,
-            hostId: session.user.uid,
+            author: session.user.uid,
+            postedAs: session.user.currentUser,
             text: value,
             imgUrls: [],
-            sharedNum: 0,
-            createdAt: new Date(),
-
+            favedBy: [],
+            sharedBy: [],
+            createdAt: new Date()
           };
+          
+          $('util-now-loading').fadeIn(400);
+          service.db.collection("posts").add(postObj)
+            .then(function(docRef) {
+              console.log("Document written with ID: ", docRef.id);
+              window.history.back();
+              riot.mount('header', 'util-header', {status: 'normal'});
+              $('util-now-loading').fadeOut(400);
+            })
+            .catch(function(error) {
+              console.error("Error adding document: ", error);
+              alert('Failed to Post');
+            });
 
         }
+
         this.toBack = function() {
           window.history.back();
           riot.mount('header', 'util-header', {status: 'normal'});
