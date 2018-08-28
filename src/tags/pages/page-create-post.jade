@@ -1,0 +1,69 @@
+page-create-post
+  div.wrap-page.f
+    div.wrap-img.mt12.ml12
+      img(src='{iconSrc}')
+    textarea(placeholder="What's happening?", onkeyup="{checkLetPost}")#postInput
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      .wrap-page {
+        padding: 48px 0px;
+        width: 100%;
+        height: 100%;
+        background: @primaryBg;
+        .wrap-img {
+          width: 48px;
+          img {
+            border-radius: 50%;
+          }
+        }
+        textarea {
+          width: 100%;
+          height: 100%;
+          padding: 16px;
+          outline: none;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.on('mount', function(){
+
+      $('modal-content').addClass('show');
+      $('modal-content').scrollTop(0);
+
+      // 次の画面遷移時にフェードインを防止
+      riot.enableFadeIn = false;
+
+      $(document).on("custom:close", function() {
+        $('modal-content').removeClass('show');
+        self.unmount(true);
+      });
+
+      var textarea = document.getElementById('postInput');
+      textarea.focus();
+
+      var button = document.getElementById('postButton');
+      this.checkLetPost = function(e) {
+        var value = e.target.value;
+        if(value == ''){
+          button.classList.remove('cta-active');
+        }else{
+          button.classList.add('cta-active');
+        }
+      }
+
+    });
+
+    
+    riot.mount('header', 'util-header', {status: 'create_post'});
+    
+    if(session.user) this.iconSrc = session.user.imgUrl;
+
+
+

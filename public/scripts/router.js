@@ -48,6 +48,13 @@ riot.route('/global-timeline', function(tagName) {
   }, 400);
 })
 
+
+// modal
+riot.route('/create-post', function(tagName) {
+  riot.mount('modal-content', 'page-create-post', {content: 'content'});
+  riot.update();
+})
+
 riot.route(function(tagName) {
   
   if(riot.enableFadeIn) $('content').removeClass('not-opacity');

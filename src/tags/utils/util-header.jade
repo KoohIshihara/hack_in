@@ -1,7 +1,16 @@
 util-header
-  div.wrap-util.f.fm.flex-between
-    div.normal(if="{status == 'normal'}")
-      p test
+  div.wrap-util
+    div(if="{status == 'normal'}").container.f.flex-between
+      a.wrap-img.f.fh
+        img(src='{iconSrc}')
+      a(onclick='{toPost}').wrap-img.f.fh
+        img(src='{postSrc}')
+
+    div(if="{status == 'create_post'}").container.f.flex-between
+      a(onclick='{toBack}').wrap-img.f.fh
+        img(src='{backSrc}')
+      a(onclick='{sendPost}').wrap-img.f.fh
+        p.cta.mr12#postButton Share
 
 
   style(scoped, type='less').
@@ -20,6 +29,26 @@ util-header
       .wrap-util {
         width: 100%;
         height: 100%;
+        .container {
+          height: 100%;
+          .wrap-img {
+            width: 48px;
+            height: 100%;
+            img {
+              width: 32px;
+              border-radius: 50%;
+            }
+          }
+          .cta {
+            color: @primaryGray;
+            font-weight: bold;
+            pointer-events: none;
+          }
+          .cta-active {
+            color: @ctaColor;
+            pointer-events: auto;
+          }
+        }
       }
     }
 
@@ -28,7 +57,40 @@ util-header
     this.status = opts.status;
 
     this.on('mount', function(){
-      debugger
+      if('user' in session){
+
+        // normal
+        this.postSrc = './img/icon/post.svg';
+        this.iconSrc = session.user.imgUrl;
+        this.toPost = function(){
+          window.location.href = './#create-post';
+        }
+        
+        // create_post
+        this.backSrc = './img/icon/back.svg';
+        this.sendPost = function() {
+          var textarea = document.getElementById('postInput');
+          var value = textarea.value;
+          console.log(value);
+          if(value='') return;
+
+          var postObj = {
+            writerId: session.user.uid,
+            hostId: session.user.uid,
+            text: value,
+            imgUrls: [],
+            sharedNum: 0,
+            createdAt: new Date(),
+
+          };
+
+        }
+        this.toBack = function() {
+          window.history.back();
+          riot.mount('header', 'util-header', {status: 'normal'});
+        }
+
+      } // if('user' in session)
     });
     
 
