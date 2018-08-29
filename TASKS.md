@@ -35,7 +35,7 @@
       - Icon
       - Name
       - Profile
-    - View His Post
+    - View His/Her Post
     - Hack In
 - (Hack List)
   - User Card
@@ -45,7 +45,7 @@
     - Hack In
 - Common
   - Header
-    - Now Account
+    - Current Account
     - Post
   - Footer
     - Time Line
