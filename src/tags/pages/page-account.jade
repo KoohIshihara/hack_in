@@ -1,6 +1,11 @@
 page-account
   div.wrap-page.py48
-    p test
+    div.wrap-profile
+      div.wrap-icon
+        img(src='{iconSrc}')
+        p.name {this.name}
+      
+
 
   style(scoped, type='less').
     @import "public/stylesheets/main.less";
@@ -37,5 +42,24 @@ page-account
     var uid = opts.__proto__.uid;
 
     if(uid){
+      service.db.collection("users")
+        .where("uid", "==", uid)
+        .limit(1)
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            //console.log(doc.uid, " => ", doc.data());
+            var user;
+            if(doc.data().uid == uid){ 
+              user = doc.data();
+              self.iconSrc = user.imgUrl;
+              self.name = user.name;
+              self.profile = user.profile;
+              self.update();
+            }
+          });
 
+      }).catch(function(error) {
+        console.log("Error getting documents: ", error);
+      });
     }
