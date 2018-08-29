@@ -1,6 +1,7 @@
 page-global-timeline
-  div.wrap-page.f.fh
-    h2 Global Time Line
+  div.wrap-page
+    module-post-card(each='{item in posts}' content='{item}')
+    //module-post-card(content='{postContent}')
 
   style(scoped, type='less').
     @import "public/stylesheets/main.less";
@@ -22,7 +23,49 @@ page-global-timeline
       $('util-now-loading').fadeOut(400);
     });
 
-    async function checkSignUp(){
+
+    // 投稿のデータを取得
+    var loadPosts = function(limitNum){
+      service.db.collection("posts")
+        .orderBy("createdAt", 'desc')
+        .limit(limitNum).get().then(function(querySnapshot) {
+        var posts = [];
+        querySnapshot.forEach(function(doc) {
+          if(doc.id){
+            var data = doc.data();
+            var post = {
+              iconSrc: data.postedAs.imgUrl,
+              name: data.postedAs.name,
+              uid: data.postedAs.uid,
+              text: data.text.split('\n'),
+              time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
+            };
+            posts.push(post);
+          }
+        });
+        
+        self.posts = posts;
+        console.log(posts);
+        /*
+        var post = posts[0];
+        self.postContent = {
+          iconSrc: post.postedAs.imgUrl,
+          name: post.postedAs.name,
+          uid: post.postedAs.uid,
+          text: post.text,
+          time: moment(post.createdAt).format('ddd DD, YYYY, HH:mm'),
+        }
+        */
+        riot.update();
+      });
+    }
+
+    loadPosts(100);
+
+    
+
+    // サインアップ時の処理
+    async function postNewUser(){
       
       var user = session.userFireauth;
 
@@ -62,6 +105,7 @@ page-global-timeline
     }
     
     if(session.isNewUser){
-      checkSignUp();
+      postNewUser();
       session.isNewUser = false;
     }
+

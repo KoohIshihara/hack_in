@@ -1,0 +1,51 @@
+module-post-card
+  div.wrap-module.px12.pt6.pb12
+    div.wrap-info.py6.mb6.f.fm
+      div.wrap-img.mr12.f.fh
+        img(src='{opts.content.iconSrc}')
+      div
+        p.name {opts.content.name}
+        p.created-at {opts.content.time}
+    div.wrap-text
+      p(each='{text in opts.content.text}') {text}
+
+
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      .wrap-module {
+        border-bottom: solid .6px rgba(0,0,0,0.2);
+        .wrap-info {
+          width: 100%;
+          /*border-bottom: solid .6px rgba(0,0,0,0.2);*/
+          .wrap-img {
+            height: 100%;
+            img {
+              border-radius: 50%;
+              width: 42px;
+            }
+          }
+          div {
+            .created-at {
+              font-size: 10px;
+              color: @primaryGray;
+            }
+          }
+        }
+        .wrap-text {
+          p {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+
+  script.
+
+    this.test = 'test<br>test';
+
+    this.on('mount', function(){
+      
+    });
