@@ -1,10 +1,13 @@
 page-account
-  div.wrap-page.py48
-    div.wrap-profile
-      div.wrap-icon
-        img(src='{iconSrc}')
-        p.name {this.name}
-      
+  div.wrap-page
+    item-profile-icon(uid='{uid}')
+    div.tab.f.flex-around
+      p(onclick='{changeTab.bind(this, "post")}').tab-button.active.py4 Posts
+      //p(onclick='{changeTab.bind(this, "fav")}').tab-button.py4 Favorite
+    div.wrap-posts
+      module-post-card(each='{item in posts}' content='{item}')
+
+
 
 
   style(scoped, type='less').
@@ -12,10 +15,24 @@ page-account
     @import "public/stylesheets/theme.less";
     :scope {
       .wrap-page {
-        padding: 48px 0px;
         width: 100%;
         height: 100%;
         background: @primaryBg;
+        .tab {
+          p {
+            width: 100%;
+            text-align: center;
+            color: @primaryBlack;
+          }
+          .active {
+            border-bottom: solid 0.8px;
+            color: @ctaColor !important;
+            font-weight: 500;
+          }
+        }
+        .wrap-posts {
+          margin-bottom: 48px;
+        }
       }
     }
 
@@ -39,27 +56,58 @@ page-account
 
     });
 
-    var uid = opts.__proto__.uid;
+    this.uid = opts.__proto__.uid;
 
-    if(uid){
-      service.db.collection("users")
-        .where("uid", "==", uid)
-        .limit(1)
-        .get()
-        .then(function(querySnapshot) {
+    this.changeTab = function(tab_type, e) {
+      
+      if(e.target.classList.contains('active')) return;
+
+      var tabs = document.getElementsByClassName('tab-button');
+
+      for(var i=0; i<tabs.length; i++){
+        tabs[i].classList.remove('active');
+      }
+      e.target.classList.add('active');
+
+      // TO DO: Get Data by tab here
+      switch(tab_type) {
+        case 'post':
+          this.getAllPosts(100);
+        break;
+        case 'fav':
+
+        break;
+      }
+
+    }
+
+    this.getAllPosts = function(limitNum) {
+      service.db.collection("posts")
+        //.orderBy("postedAs.uid", 'desc')
+        .where("postedAs.uid", "==", this.uid)
+        .limit(limitNum).get().then(function(querySnapshot) {
+          
+          var posts = [];
           querySnapshot.forEach(function(doc) {
-            //console.log(doc.uid, " => ", doc.data());
-            var user;
-            if(doc.data().uid == uid){ 
-              user = doc.data();
-              self.iconSrc = user.imgUrl;
-              self.name = user.name;
-              self.profile = user.profile;
-              self.update();
+            if(doc.id){
+              var data = doc.data();
+              var post = {
+                iconSrc: data.postedAs.imgUrl,
+                name: data.postedAs.name,
+                uid: data.postedAs.uid,
+                text: data.text.split('\n'),
+                time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
+              };
+              posts.push(post);
             }
           });
-
-      }).catch(function(error) {
-        console.log("Error getting documents: ", error);
+          self.posts = posts.reverse();
+          riot.update();
+          $('util-now-loading').fadeOut(400);
       });
     }
+    $('util-now-loading').fadeIn(400);
+    this.getAllPosts(100);
+
+
+

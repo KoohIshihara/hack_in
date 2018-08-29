@@ -2,7 +2,7 @@ module-post-card
   div.wrap-module.px12.pt6.pb12
     div.wrap-info.py6.mb6.f.fm
       a(onclick='{toAccountPage.bind(this, opts.content.uid)}').wrap-img.mr12.f.fh
-        img(src='{opts.content.iconSrc}')
+        img(src='{opts.content.iconSrc}' alt='User Icon')
       div
         p.name {opts.content.name}
         p.created-at {opts.content.time}
@@ -49,7 +49,6 @@ module-post-card
     this.on('mount', function(){
 
     });
-
 
     this.toAccountPage = function(uid, e){
       //riot.mount('header', 'util-header', {status: 'back'});

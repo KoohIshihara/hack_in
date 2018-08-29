@@ -8,10 +8,10 @@ page-global-timeline
     @import "public/stylesheets/theme.less";
     :scope {
       .wrap-page {
-        padding: 48px 0px;
         width: 100%;
         height: 100%;
         background: @primaryBg;
+        margin-bottom: 48px;
       }
     }
 
@@ -48,17 +48,6 @@ page-global-timeline
         });
         
         self.posts = posts;
-        console.log(posts);
-        /*
-        var post = posts[0];
-        self.postContent = {
-          iconSrc: post.postedAs.imgUrl,
-          name: post.postedAs.name,
-          uid: post.postedAs.uid,
-          text: post.text,
-          time: moment(post.createdAt).format('ddd DD, YYYY, HH:mm'),
-        }
-        */
         riot.update();
       });
     }
@@ -79,7 +68,7 @@ page-global-timeline
         uid: user.uid,
         author: user.uid,
         auth_token: session.token,
-        profile: 'No Profile',
+        profileHistory: ['No Profile'],
         email: user.email,
         imgUrl: user.photoURL + '?width=892&amp;height=892',
         hackedCounter: 0,
