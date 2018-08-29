@@ -12,6 +12,10 @@ util-header
       a(onclick='{sendPost}').wrap-img.f.fh
         p.cta.mr12#postButton Share
 
+    div(if="{status == 'back'}").container.f.flex-between
+      a(onclick='{toBack}').wrap-img.f.fh
+        img(src='{backSrc}')
+
 
   style(scoped, type='less').
     @import "public/stylesheets/main.less";
@@ -101,7 +105,6 @@ util-header
 
         this.toBack = function() {
           window.history.back();
-          riot.mount('header', 'util-header', {status: 'normal'});
         }
 
       } // if('user' in session)

@@ -58,10 +58,9 @@ page-create-post
         }
       }
 
-    });
+      riot.enableReloadContent = false;
 
-    
-    riot.mount('header', 'util-header', {status: 'create_post'});
+    });
     
     if(session.user) this.iconSrc = session.user.imgUrl;
 

@@ -23,6 +23,8 @@ page-global-timeline
       $('util-now-loading').fadeOut(400);
     });
 
+    riot.mount('header', 'util-header', {status: 'normal'});
+    riot.update();
 
     // 投稿のデータを取得
     var loadPosts = function(limitNum){
@@ -42,6 +44,7 @@ page-global-timeline
             };
             posts.push(post);
           }
+          $('util-now-loading').fadeOut(400);
         });
         
         self.posts = posts;
@@ -60,9 +63,11 @@ page-global-timeline
       });
     }
 
-    loadPosts(100);
+    if(session.user){ 
+      $('util-now-loading').fadeIn(400);
+      loadPosts(100);
+    }
 
-    
 
     // サインアップ時の処理
     async function postNewUser(){
@@ -74,9 +79,12 @@ page-global-timeline
         uid: user.uid,
         author: user.uid,
         auth_token: session.token,
-        profile: '',
+        profile: 'No Profile',
         email: user.email,
         imgUrl: user.photoURL + '?width=892&amp;height=892',
+        hackedCounter: 0,
+        follow: [],
+        follower: [],
         //hackedUid: user.uid,
         currentUser: {
           name: user.displayName,

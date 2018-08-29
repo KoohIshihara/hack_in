@@ -1,8 +1,8 @@
 module-post-card
   div.wrap-module.px12.pt6.pb12
     div.wrap-info.py6.mb6.f.fm
-      div.wrap-img.mr12.f.fh
-        img(src='{opts.content.iconSrc}')
+      a.wrap-img.mr12.f.fh
+        img(src='{opts.content.iconSrc}' onclick='{toAccountPage}' data-uid='{opts.content.uid}')
       div
         p.name {opts.content.name}
         p.created-at {opts.content.time}
@@ -44,8 +44,16 @@ module-post-card
 
   script.
 
-    this.test = 'test<br>test';
+    var self = this;
 
     this.on('mount', function(){
-      
+
     });
+
+
+    this.toAccountPage = function(e){
+      //riot.mount('header', 'util-header', {status: 'back'});
+      //riot.update();
+      var uid = e.target.dataset.uid;
+      window.location.href = `./#users/${uid}`;
+    }
