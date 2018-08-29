@@ -49,14 +49,24 @@
     - Post
   - Footer
     - Time Line
-    - My Page
+    - Create a New Account (sprint2)
+    - My Page?
+  - Left Menu
+    - Icon
     - (Hack List)
 - Post
   - Input Text
   - Put a Post
 
-
+## Sprint2
+- Create a New Additional Account
 
 ## Idea
 ### Edit History of Profile
 Let any user edit any profile. But a history of it remains and can be read by any one.
+
+### Hacked Counter
+How many times is the account hacked.
+
+### Notification
+When my account is hacked.
