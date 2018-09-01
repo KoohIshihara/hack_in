@@ -127,7 +127,8 @@ riot.route('/create-post', function(tagName) {
 
 
 riot.route(function(tagName) {
-  
+  location.href = './#login';
+  /*
   if(riot.enableFadeIn) $('content').removeClass('not-opacity');
 
   riot.enableFadeIn = true;
@@ -139,6 +140,8 @@ riot.route(function(tagName) {
     riot.mount('content', 'page-top', {content: 'content'});
     riot.update();
   }, 400);
+  */
+
 });
 
 riot.route.start(true);
