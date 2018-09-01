@@ -58,8 +58,18 @@
   - Input Text
   - Put a Post
 
+### Task
+- Hosting
+- Left Menu
+- Hack
+- Hack List (Collection)
+- Security Rule that disenable User and Posts to be Delete Write
+- Load More
+- Get a Domain
+
 ## Sprint2
-- Create a New Additional Account
+- True False for Post
+
 
 ## Idea
 ### Edit History of Profile
@@ -70,3 +80,9 @@ How many times is the account hacked.
 
 ### Notification
 When my account is hacked.
+
+### Create a New Additional Account
+A user can any additional account.
+
+### Hacked Counter
+An account can show hacked count.
