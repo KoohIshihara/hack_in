@@ -8,7 +8,8 @@ app
   header
     util-header(status = '{headerStatus}')
   util-footer
-  util-now-loading
+  util-now-loading#loading
+  util-now-loading#loadingForModal
   div.wrap-content
     content
     modal-content
@@ -47,7 +48,7 @@ app
         modal-content {
           display: block;
           position: absolute;
-          z-index: 2;
+          z-index: 5;
           width: 100%;
           height: 100%;
           overflow: scroll;

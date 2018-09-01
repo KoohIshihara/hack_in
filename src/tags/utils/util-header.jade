@@ -16,6 +16,13 @@ util-header
       a(onclick='{toBack}').wrap-img.f.fh
         img(src='{backSrc}')
 
+    div(if="{status == 'back_with_edit'}").container.f.flex-between
+      a(onclick='{toBack}').wrap-img.f.fh
+        img(src='{backSrc}')
+      a(onclick='{toPost}').wrap-img.f.fh
+        img(src='{postSrc}')
+
+
 
   style(scoped, type='less').
     @import "public/stylesheets/main.less";
@@ -88,13 +95,13 @@ util-header
             createdAt: new Date()
           };
           
-          $('util-now-loading').fadeIn(400);
+          $('#loading').fadeIn(400);
           service.db.collection("posts").add(postObj)
             .then(function(docRef) {
               console.log("Document written with ID: ", docRef.id);
+              riot.enableReloadContent = true;
               window.history.back();
-              riot.mount('header', 'util-header', {status: 'normal'});
-              $('util-now-loading').fadeOut(400);
+              //$('util-now-loading').fadeOut(400);
             })
             .catch(function(error) {
               console.error("Error adding document: ", error);

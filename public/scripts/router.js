@@ -54,9 +54,10 @@ riot.route('/global-timeline', function(tagName) {
 
   $(document).trigger("custom:close");
 
+  // ヘッターの中身の指定
   riot.mount('header', 'util-header', {status: 'normal'});
   riot.update();
-  
+
   if(riot.enableReloadContent){
     setTimeout(function() {
       $('content').addClass('not-opacity');
@@ -67,6 +68,31 @@ riot.route('/global-timeline', function(tagName) {
     riot.enableReloadContent = true;
   }
 })
+
+riot.route('/mypage', function(tagName) {
+
+  if(riot.enableFadeIn) $('content').removeClass('not-opacity');
+
+  riot.enableFadeIn = true;
+
+  $(document).trigger("custom:close");
+
+  // ヘッターの中身の指定
+  riot.mount('header', 'util-header', {status: 'normal'});
+  riot.update();
+
+  if(riot.enableReloadContent){
+    setTimeout(function() {
+      $('content').addClass('not-opacity');
+      var uid = session.user.uid;
+      riot.mount('content', 'page-account', {uid: uid});
+      riot.update();
+    }, 400);
+  }else{
+    riot.enableReloadContent = true;
+  }
+})
+
 /*
 riot.route('/users/*', function(tagName) {
 
@@ -86,7 +112,7 @@ riot.route('/users/*', function(tagName) {
 
 // modal
 riot.route('/users/*', function(tagName) {
-  riot.mount('header', 'util-header', {status: 'back'});
+  riot.mount('header', 'util-header', {status: 'back_with_edit'});
   riot.mount('modal-content', 'page-account', {uid: tagName});
   riot.update();
 })

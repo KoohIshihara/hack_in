@@ -41,19 +41,21 @@ page-account
     var self = this;
 
     this.on('mount', function(){
-      $('modal-content').addClass('show');
-      $('modal-content').scrollTop(0);
 
-      // 次の画面遷移時にフェードインを防止
-      riot.enableFadeIn = false;
+      if(location.hash != '#mypage'){
+        $('modal-content').addClass('show');
+        $('modal-content').scrollTop(0);
 
-      $(document).on("custom:close", function() {
-        $('modal-content').removeClass('show');
-        self.unmount(true);
-      });
+        // 次の画面遷移時にフェードインを防止
+        riot.enableFadeIn = false;
 
-      riot.enableReloadContent = false;
+        $(document).on("custom:close", function() {
+          $('modal-content').removeClass('show');
+          self.unmount(true);
+        });
 
+        riot.enableReloadContent = false;
+      }
     });
 
     this.uid = opts.__proto__.uid;
@@ -103,10 +105,21 @@ page-account
           });
           self.posts = posts.reverse();
           riot.update();
-          $('util-now-loading').fadeOut(400);
+
+          if(location.hash == '#mypage'){
+            $('#loading').fadeOut(400);
+          }else{
+            $('#loadingForModal').fadeOut(400);
+          }
       });
     }
-    $('util-now-loading').fadeIn(400);
+
+    if(location.hash == '#mypage'){
+      $('#loading').fadeIn(400);
+    }else{
+      $('#loadingForModal').fadeIn(400);
+    }
+    
     this.getAllPosts(100);
 
 
