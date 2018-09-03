@@ -8,6 +8,7 @@
 - Create Account
 - Post his/her Story
 
+
 ## UI of Spring1
 ### Page and Function
 - Sign In / Sign Up
@@ -59,16 +60,17 @@
   - Put a Post
 
 ### Task
-- Hosting
+//- Hosting
 - Left Menu
-- Hack
+//- Hack
 - Hack List (Collection)
 - Security Rule that disenable User and Posts to be Delete Write
 - Load More
 - Get a Domain
 
+
 ## Sprint2
-- True False for Post
+- True / False for Post
 
 
 ## Idea
