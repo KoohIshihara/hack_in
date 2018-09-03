@@ -4,7 +4,9 @@ item-profile-icon
       div.wrap-icon-content
         div.f.fc
           img(src='{iconSrc}').mb8
-        p.name.mb4 {this.name}
+        p.name.mb16 {this.name}
+        div.mb16.f.fc
+          atom-hack-in(uid='{uid}')
         p.profile {this.profile}
 
   style(scoped, type='less').
@@ -45,6 +47,7 @@ item-profile-icon
     // console.log('opts.uid', opts.uid);
 
     var uid = opts.uid;
+    this.uid = uid;
 
     if(uid){
       service.db.collection("users")

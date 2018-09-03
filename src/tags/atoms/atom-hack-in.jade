@@ -1,0 +1,120 @@
+atom-hack-in(data-uid='{opts.uid}')
+  div(onclick='{hackIn}' class='{button.status}').wrap-atom.px7.py3.f.fm.flex-around
+    i(class='{button.icon}')
+    p.mt1 {button.label}
+
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      cursor: pointer;
+      .wrap-atom {
+        width: 100px;
+        border: solid 1.4px #2a2a2a;
+        border-radius: 3px;
+      }
+      .normal {
+        background: @primaryBlack;
+        i {
+          color: #FFF;
+        }
+        p {
+          font-weight: 500;
+          color: #FFF;
+        }
+      }
+      .hacked {
+        background: #FFF;
+        pointer-events: none;
+        i {
+          color: @primaryBlack;
+        }
+        p {
+          font-weight: 500;
+          color: @primaryBlack;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    // 現在、ハックしているアカウントかどうか
+    if('user' in session && opts.uid==session.user.currentUser.uid){
+      this.button = {
+        status: 'hacked',
+        icon: 'icon-hacked',
+        label: 'Hacked   '
+      };
+    }else{
+      this.button = {
+        status: 'normal',
+        icon: 'icon-hack-in',
+        label: 'Hack In',
+      };
+    }
+
+    self.update();
+
+    this.hackIn = async (e) => {
+      var tag = e.target;
+      var uid = $(tag).parents('atom-hack-in')[0].dataset.uid;
+      console.log(uid);
+     
+      await service.db.collection("users")
+        .where("uid", "==", uid)
+        .limit(1)
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            //console.log(doc.uid, " => ", doc.data());
+            if(doc.data().uid == uid){ 
+              var user = doc.data();
+              var hackedUser = {
+                uid: user.uid,
+                name: user.name,
+                profileHistory: user.profileHistory,
+                imgUrl: user.imgUrl,
+              };
+              session.user.currentUser = hackedUser;
+              self.button = {
+                status: 'hacked',
+                icon: 'icon-hacked',
+                label: 'Hacked   '
+              };
+
+              // モーダルページでない場合はヘッダーもアップデート
+              if(location.hash.indexOf('#users') == -1){
+                riot.mount('header', 'util-header', {status: 'normal'});
+              }
+              riot.update();
+
+            }
+          });
+        }).catch(function(error) {
+          console.log("Error getting documents: ", error);
+        });
+
+      // 自分のcurrentUserを更新
+      await service.db.collection("users")
+        .where("uid", "==", session.user.uid)
+        .limit(1)
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            var id = doc.id;
+            service.db.collection("users").doc(id).set(session.user);
+          });
+        })
+        .catch(function(error) {
+            // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
+
+      
+    }
+
+
+

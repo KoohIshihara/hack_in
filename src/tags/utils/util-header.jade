@@ -72,7 +72,7 @@ util-header
 
         // normal
         this.postSrc = './img/icon/post.svg';
-        this.iconSrc = session.user.imgUrl;
+        this.iconSrc = session.user.currentUser.imgUrl;
         this.toPost = function(){
           window.location.href = './#create-post';
         }
