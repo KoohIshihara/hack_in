@@ -95,13 +95,13 @@ util-header
             createdAt: new Date()
           };
           
-          $('#loading').fadeIn(400);
+          $('#loadingForModal').fadeIn(400);
           service.db.collection("posts").add(postObj)
             .then(function(docRef) {
               console.log("Document written with ID: ", docRef.id);
               riot.enableReloadContent = true;
               window.history.back();
-              //$('util-now-loading').fadeOut(400);
+              $('#loadingForModal').fadeOut(400);
             })
             .catch(function(error) {
               console.error("Error adding document: ", error);

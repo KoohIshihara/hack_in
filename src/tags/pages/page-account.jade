@@ -85,13 +85,14 @@ page-account
 
     this.getAllPosts = function(limitNum) {
       service.db.collection("posts")
-        //.orderBy("postedAs.uid", 'desc')
         .where("postedAs.uid", "==", this.uid)
+        .orderBy("createdAt", 'desc')
         .limit(limitNum).get().then(function(querySnapshot) {
           
           var posts = [];
           querySnapshot.forEach(function(doc) {
             if(doc.id){
+              var docId = doc.id;
               var data = doc.data();
               var post = {
                 iconSrc: data.postedAs.imgUrl,
@@ -99,11 +100,13 @@ page-account
                 uid: data.postedAs.uid,
                 text: data.text.split('\n'),
                 time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
+                docId: docId,
               };
               posts.push(post);
             }
           });
-          self.posts = posts.reverse();
+
+          self.posts = posts;
           riot.update();
 
           if(location.hash == '#mypage'){
