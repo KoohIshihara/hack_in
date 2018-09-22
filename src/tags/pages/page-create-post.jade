@@ -1,7 +1,8 @@
 page-create-post
   div.wrap-page.f
-    div.wrap-img.mt12.ml12
-      img(src='{iconSrc}')
+    div.wrap-img
+      div.img
+        img(src='{iconSrc}')
     textarea(placeholder="What's happening?", onkeyup="{checkLetPost}")#postInput
 
   style(scoped, type='less').
@@ -13,9 +14,16 @@ page-create-post
         height: 100%;
         background: @primaryBg;
         .wrap-img {
-          width: 48px;
-          img {
+          padding: 16px 0 0 16px;
+          .img {
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
+            overflow: hidden;
+            img {
+              height: 100%;
+              object-fit: cover;
+            }
           }
         }
         textarea {

@@ -68,6 +68,9 @@
 - Load More
 - Get a Domain
 
+### Bug
+// users/${uid} > createPost > users/${uid} > globaltimeline
+// does not work well. Now Loading does not hide.
 
 ## Sprint2
 - True / False for Post

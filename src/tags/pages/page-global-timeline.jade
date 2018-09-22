@@ -29,24 +29,24 @@ page-global-timeline
       service.db.collection("posts")
         .orderBy("createdAt", 'desc')
         .limit(limitNum).get().then(function(querySnapshot) {
-        var posts = [];
-        querySnapshot.forEach(function(doc) {
-          if(doc.id){
-            var data = doc.data();
-            var post = {
-              iconSrc: data.postedAs.imgUrl,
-              name: data.postedAs.name,
-              uid: data.postedAs.uid,
-              text: data.text.split('\n'),
-              time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
-            };
-            posts.push(post);
-          }
-          $('#loading').fadeOut(400);
-        });
-        
-        self.posts = posts;
-        riot.update();
+          var posts = [];
+          querySnapshot.forEach(function(doc) {
+            if(doc.id){
+              var data = doc.data();
+              var post = {
+                iconSrc: data.postedAs.imgUrl,
+                name: data.postedAs.name,
+                uid: data.postedAs.uid,
+                text: data.text.split('\n'),
+                time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
+              };
+              posts.push(post);
+            }
+            $('#loading').fadeOut(400);
+          });
+          
+          self.posts = posts;
+          riot.update();
       });
     }
 
@@ -93,14 +93,39 @@ page-global-timeline
           logout();
         });
 
+      var postObj = {
+        author: session.user.uid,
+        postedAs: session.user.currentUser,
+        text: `${userObj.name}がHack Inをはじめました。`,
+        imgUrls: [],
+        favedBy: [],
+        sharedBy: [],
+        createdAt: new Date()
+      };
+
+      service.db.collection("posts").add(postObj)
+        .then(function(docRef) {
+          console.log("Document written with ID: ", docRef.id);
+        })
+        .catch(function(error) {
+          console.error("Error adding document: ", error);
+          alert('Failed to Post');
+        });
+      
+
+      loadPosts(100);
       riot.mount('header', 'util-header', {status: 'normal'});
-      riot.mount('content', 'page-global-timeline');
+      //riot.mount('content', 'page-global-timeline');
+
       riot.update();
       
     }
     
+
     if(session.isNewUser){
       postNewUser();
       session.isNewUser = false;
     }
+    
+  
 

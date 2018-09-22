@@ -2,8 +2,9 @@ item-profile-icon(data-doc-id='{docId}')
   div.wrap-item.py40
     div.wrap-icon.f.fh
       div.wrap-icon-content
-        div.f.fc
-          img(src='{iconSrc}').mb8
+        div.f.fc.m16
+          div.wrap-img
+            img(src='{iconSrc}').mb8
         p.name.mb16 {this.name}
         div.mb16.f.fc
           atom-hack-in(uid='{uid}')
@@ -21,10 +22,15 @@ item-profile-icon(data-doc-id='{docId}')
           .wrap-icon-content {
             width: 80%;
             max-width: 300px;
-            img {
-              border-radius: 50%;
+            .wrap-img {
               width: 120px;
               height: 120px;
+              overflow: hidden;
+              border-radius: 50%;
+              img {
+                height: 100%;
+                object-fit: cover;
+              }
             }
             .name {
               text-align: center;
