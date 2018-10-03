@@ -1,7 +1,6 @@
 page-global-timeline
-  div.wrap-page
+  div.wrap-page#wrapTimeline
     module-post-card(each='{item in posts}' content='{item}')
-    //module-post-card(content='{postContent}')
 
   style(scoped, type='less').
     @import "public/stylesheets/main.less";
@@ -10,6 +9,7 @@ page-global-timeline
       .wrap-page {
         width: 100%;
         background: @primaryBg;
+        overflow: scroll;
       }
     }
 
@@ -18,17 +18,37 @@ page-global-timeline
     var self = this;
 
     this.on('mount', function(){
-      //$('#loading').fadeOut(400);
+      // Load More
+      //var timeline = document.getElementById("wrapTimeline")
+      var content = document.getElementsByTagName("content")[0];
+      content.onscroll = function(e){
+        if(window.location.hash=='#global-timeline'){
+          var scrollValue = this.scrollTop;
+          var scrollHeight = this.scrollHeight;
+          var offsetHeight = this.offsetHeight;
+          if(scrollValue - (scrollHeight-offsetHeight) == 0){
+            console.log("more");
+            loadPosts(14, self.loadedAt);
+          }
+        }
+      }
+      
     });
 
     riot.mount('header', 'util-header', {status: 'normal'});
     riot.update();
 
+    this.posts = [];
+    this.loadedAt = new Date();
+    
     // 投稿のデータを取得
-    var loadPosts = function(limitNum){
+    var loadPosts = function(limitNum, when){
       service.db.collection("posts")
         .orderBy("createdAt", 'desc')
-        .limit(limitNum).get().then(function(querySnapshot) {
+        //.startAt(startAt)
+        .where("createdAt", "<", when)
+        .limit(limitNum)
+        .get().then(function(querySnapshot) {
           var posts = [];
           querySnapshot.forEach(function(doc) {
             if(doc.id){
@@ -41,20 +61,20 @@ page-global-timeline
                 time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
               };
               posts.push(post);
+              self.loadedAt = data.createdAt;
             }
             $('#loading').fadeOut(400);
           });
-          
-          self.posts = posts;
+          self.posts = self.posts.concat(posts);
+
           riot.update();
       });
     }
 
     if(session.user){ 
       $('#loading').fadeIn(400);
-      loadPosts(100);
+      loadPosts(14, this.loadedAt);
     }
-
 
     // サインアップ時の処理
     async function postNewUser(){
@@ -113,7 +133,7 @@ page-global-timeline
         });
       
 
-      loadPosts(100);
+      $('#loading').fadeIn(400);
       riot.mount('header', 'util-header', {status: 'normal'});
       //riot.mount('content', 'page-global-timeline');
 
