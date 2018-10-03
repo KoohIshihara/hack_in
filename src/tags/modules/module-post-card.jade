@@ -6,10 +6,11 @@ module-post-card
       div
         p.name {opts.content.name}
         p.created-at {opts.content.time}
-    div.wrap-text
+    div.wrap-text.mb8
       p(each='{text in opts.content.text}') {text}
-
-
+    div.wrap-icons.f.flex-between
+      item-alike(postid='{opts.content.postId}', authorid='{opts.content.authorId}', postedas='{opts.content.uid}')
+      item-unlike(postid='{opts.content.postId}', authorid='{opts.content.authorId}', postedas='{opts.content.uid}')
 
   style(scoped, type='less').
     @import "public/stylesheets/main.less";
@@ -52,7 +53,7 @@ module-post-card
     var self = this;
 
     this.on('mount', function(){
-
+      
     });
 
     this.toAccountPage = function(uid, e){

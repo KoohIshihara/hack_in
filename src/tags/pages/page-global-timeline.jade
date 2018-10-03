@@ -40,7 +40,7 @@ page-global-timeline
 
     this.posts = [];
     this.loadedAt = new Date();
-    
+
     // 投稿のデータを取得
     var loadPosts = function(limitNum, when){
       service.db.collection("posts")
@@ -54,7 +54,9 @@ page-global-timeline
             if(doc.id){
               var data = doc.data();
               var post = {
+                postId: doc.id,
                 iconSrc: data.postedAs.imgUrl,
+                authorId: data.author,
                 name: data.postedAs.name,
                 uid: data.postedAs.uid,
                 text: data.text.split('\n'),

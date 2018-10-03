@@ -1,0 +1,93 @@
+item-unlike
+  div.wrap-item.f.fm
+    div(onclick='{postAlike}').wrap-icon.mr4.f.fm
+      i.icon-unlike
+    div.label.f.fm
+      p Unlike: 
+      p {counter}
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      &.pushed {
+        .wrap-icon {
+          pointer-events: none;
+          i {
+            color: @primaryBlack !important;
+          }
+        }
+        p {
+          color: @primaryBlack !important;
+        } 
+      }
+      .wrap-item {
+        color: #bbb;
+        .wrap-icon {
+          i {
+            font-size: 24px;
+            margin-left: -4px;
+          }
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.on('mount', function(){
+
+    });
+
+    this.unlikes = [];
+
+    this.counter = 0;
+
+    // unlikeする
+    this.postAlike = function(){
+
+      var unlikeObj = {
+        postAuthor: this.opts.authorid,
+        from: session.user.uid,
+        to: this.opts.postid,
+        postedAs: this.opts.postedas,
+        createdAt: new Date(),
+      };
+      
+      service.db.collection("unlikes").add(unlikeObj)
+        .then(function(docRef) {
+          console.log("Document written with ID: ", docRef.id);
+        })
+        .catch(function(error) {
+          console.error("Error adding document: ", error);
+          alert('Failed to Post');
+        });
+
+      this.counter++;
+      this.update();
+
+      // 押された状態にする
+      this.root.classList.add('pushed');
+
+    }
+
+    service.db.collection("unlikes")
+      .where("to", "==", self.opts.postid)
+      .orderBy("createdAt", 'desc')
+      .get().then(function(querySnapshot) {
+        var posts = [];
+        querySnapshot.forEach(function(doc) {
+          if(doc.id){
+            var data = doc.data();
+            self.unlikes.push(data);
+            if(data.postAuthor==session.user.uid){
+              // 押された状態にする
+              self.root.classList.add('pushed');
+            }
+          }
+        });
+        self.counter = self.unlikes.length;
+        riot.update();
+    });
+
