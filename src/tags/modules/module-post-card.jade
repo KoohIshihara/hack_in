@@ -9,8 +9,10 @@ module-post-card
     div.wrap-text.mb8
       p(each='{text in opts.content.text}') {text}
     div.wrap-icons.f.flex-between
-      item-alike(postid='{opts.content.postId}', authorid='{opts.content.authorId}', postedas='{opts.content.uid}')
-      item-unlike(postid='{opts.content.postId}', authorid='{opts.content.authorId}', postedas='{opts.content.uid}')
+      item-alike(post='{opts.content}')
+      item-unlike(post='{opts.content}')
+      //item-alike(postid='{opts.content.postId}', authorid='{opts.content.authorId}', postedas='{opts.content.uid}')
+      //item-unlike(postid='{opts.content.postId}', authorid='{opts.content.authorId}', postedas='{opts.content.uid}')
 
   style(scoped, type='less').
     @import "public/stylesheets/main.less";
@@ -28,8 +30,8 @@ module-post-card
             border-radius: 50%;
             img {
               /*border-radius: 50%;
-              width: 42px;*/
-              height: 100%;
+              width: 42px;
+              height: 100%;*/
               object-fit: cover;
             }
           }

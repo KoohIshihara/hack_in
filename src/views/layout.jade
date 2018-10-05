@@ -18,8 +18,8 @@ html
     meta(property='og:title', content='Hack In')
     meta(property='og:type', content='website')
     meta(property='og:description', content='Hack In | The experiment of Borderless Identity')
-    meta(property='og:url', content='')
-    meta(property='og:image', content='./images/favicon.png')
+    meta(property='og:url', content='https://hack-in-kooh.firebaseapp.com/#login')
+    meta(property='og:image', content='./img/ogp-hack-in.png')
     meta(property='og:site_name', content='Hack In')
     meta(property='og:email', content='')
 
@@ -51,6 +51,16 @@ html
     //script(src='./scripts/tags.js')
     //script(src='./scripts/router.js')
     script(type='text/javascript' src='./js/index.js')
+
+    // Global site tag (gtag.js) - Google Analytics
+    script(async src="https://www.googletagmanager.com/gtag/js?id=UA-80522293-3")
+    script.
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-80522293-3');
+
 
   body
     block content

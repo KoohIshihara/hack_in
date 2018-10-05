@@ -2,7 +2,8 @@ page-account
   div.wrap-page
     item-profile-icon(uid='{uid}')
     div.tab.f.flex-around
-      p(onclick='{changeTab.bind(this, "post")}').tab-button.active.py4 Posts
+      // ここに .active つけるとタブわけになるよ
+      p(onclick='{changeTab.bind(this, "post")}').tab-button.py4 Posts
       //p(onclick='{changeTab.bind(this, "fav")}').tab-button.py4 Favorite
     div.wrap-posts
       module-post-card(each='{item in posts}' content='{item}')
@@ -22,6 +23,7 @@ page-account
           p {
             width: 100%;
             text-align: center;
+            border-bottom: solid 0.8px;
             color: @primaryBlack;
           }
           .active {
@@ -74,7 +76,7 @@ page-account
       // TO DO: Get Data by tab here
       switch(tab_type) {
         case 'post':
-          this.getAllPosts(14);
+          this.getPosts(14);
         break;
         case 'fav':
 
@@ -83,7 +85,7 @@ page-account
 
     }
 
-    this.getAllPosts = function(limitNum) {
+    this.getPosts = function(limitNum) {
       service.db.collection("posts")
         .where("postedAs.uid", "==", this.uid)
         .orderBy("createdAt", 'desc')
@@ -125,7 +127,7 @@ page-account
       $('#loadingForModal').fadeIn(400);
     }
     
-    this.getAllPosts(14);
+    this.getPosts(14);
 
 
 

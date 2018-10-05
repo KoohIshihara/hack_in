@@ -1,9 +1,9 @@
 item-unlike
-  div.wrap-item.f.fm
-    div(onclick='{postAlike}').wrap-icon.mr4.f.fm
+  div(onclick='{postunlike}').wrap-item.f.fm
+    div.wrap-icon.mr4.f.fm
       i.icon-unlike
     div.label.f.fm
-      p Unlike: 
+      p unlike: 
       p {counter}
 
   style(scoped, type='less').
@@ -11,6 +11,7 @@ item-unlike
     @import "public/stylesheets/theme.less";
     :scope {
       &.pushed {
+        pointer-events: none;
         .wrap-icon {
           pointer-events: none;
           i {
@@ -19,6 +20,7 @@ item-unlike
         }
         p {
           color: @primaryBlack !important;
+          pointer-events: none;
         } 
       }
       .wrap-item {
@@ -45,14 +47,13 @@ item-unlike
     this.counter = 0;
 
     // unlikeする
-    this.postAlike = function(){
+    this.postunlike = function(){
 
       var unlikeObj = {
-        postAuthor: this.opts.authorid,
         from: session.user.uid,
-        to: this.opts.postid,
-        postedAs: this.opts.postedas,
+        to: this.opts.post.postId,
         createdAt: new Date(),
+        post: this.opts.post
       };
       
       service.db.collection("unlikes").add(unlikeObj)
@@ -73,7 +74,7 @@ item-unlike
     }
 
     service.db.collection("unlikes")
-      .where("to", "==", self.opts.postid)
+      .where("to", "==", self.opts.post.postId)
       .orderBy("createdAt", 'desc')
       .get().then(function(querySnapshot) {
         var posts = [];
@@ -81,7 +82,8 @@ item-unlike
           if(doc.id){
             var data = doc.data();
             self.unlikes.push(data);
-            if(data.postAuthor==session.user.uid){
+
+            if(data.from==session.user.uid){
               // 押された状態にする
               self.root.classList.add('pushed');
             }

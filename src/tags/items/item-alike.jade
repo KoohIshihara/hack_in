@@ -11,6 +11,7 @@ item-alike
     @import "public/stylesheets/theme.less";
     :scope {
       &.pushed {
+        pointer-events: none;
         .wrap-icon {
           pointer-events: none;
           i {
@@ -19,6 +20,7 @@ item-alike
         }
         p {
           color: @primaryBlack !important;
+          pointer-events: none;
         } 
       }
       .wrap-item {
@@ -48,11 +50,10 @@ item-alike
     this.postAlike = function(){
 
       var alikeObj = {
-        postAuthor: this.opts.authorid,
         from: session.user.uid,
-        to: this.opts.postid,
-        postedAs: this.opts.postedas,
+        to: this.opts.post.postId,
         createdAt: new Date(),
+        post: this.opts.post
       };
       
       service.db.collection("alikes").add(alikeObj)
@@ -73,7 +74,7 @@ item-alike
     }
 
     service.db.collection("alikes")
-      .where("to", "==", self.opts.postid)
+      .where("to", "==", self.opts.post.postId)
       .orderBy("createdAt", 'desc')
       .get().then(function(querySnapshot) {
         var posts = [];
@@ -81,7 +82,8 @@ item-alike
           if(doc.id){
             var data = doc.data();
             self.alikes.push(data);
-            if(data.postAuthor==session.user.uid){
+
+            if(data.from==session.user.uid){
               // 押された状態にする
               self.root.classList.add('pushed');
             }
