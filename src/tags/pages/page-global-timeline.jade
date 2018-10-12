@@ -1,6 +1,9 @@
 page-global-timeline
   div.wrap-page#wrapTimeline
     module-post-card(each='{item in posts}' content='{item}')
+    div.wrap-loading-more
+      div.f.fh
+        atom-now-loading-icon
 
   style(scoped, type='less').
     @import "public/stylesheets/main.less";
@@ -10,12 +13,20 @@ page-global-timeline
         width: 100%;
         background: @primaryBg;
         overflow: scroll;
+        .wrap-loading-more {
+          display: none;
+        }
       }
     }
 
   script.
 
     var self = this;
+
+    this.posts = [];
+    this.loadedAt = new Date();
+    this.enableLoading = true;
+    this.isLoading = false;
 
     this.on('mount', function(){
       // Load More
@@ -38,39 +49,49 @@ page-global-timeline
     riot.mount('header', 'util-header', {status: 'normal'});
     riot.update();
 
-    this.posts = [];
-    this.loadedAt = new Date();
+    
 
     // 投稿のデータを取得
     var loadPosts = function(limitNum, when){
-      service.db.collection("posts")
-        .orderBy("createdAt", 'desc')
-        //.startAt(startAt)
-        .where("createdAt", "<", when)
-        .limit(limitNum)
-        .get().then(function(querySnapshot) {
-          var posts = [];
-          querySnapshot.forEach(function(doc) {
-            if(doc.id){
-              var data = doc.data();
-              var post = {
-                postId: doc.id,
-                iconSrc: data.postedAs.imgUrl,
-                authorId: data.author,
-                name: data.postedAs.name,
-                uid: data.postedAs.uid,
-                text: data.text.split('\n'),
-                time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
-              };
-              posts.push(post);
-              self.loadedAt = data.createdAt;
-            }
-            $('#loading').fadeOut(400);
-          });
-          self.posts = self.posts.concat(posts);
+      if(self.enableLoading && !(self.isLoading)){
+        self.isLoading = true;
+        $('.wrap-loading-more').slideDown(400);
 
-          riot.update();
-      });
+        service.db.collection("posts")
+          .orderBy("createdAt", 'desc')
+          //.startAt(startAt)
+          .where("createdAt", "<", when)
+          .limit(limitNum)
+          .get().then(function(querySnapshot) {
+            var posts = [];
+            querySnapshot.forEach(function(doc) {
+              if(doc.id){
+                var data = doc.data();
+                var post = {
+                  postId: doc.id,
+                  iconSrc: data.postedAs.imgUrl,
+                  authorId: data.author,
+                  name: data.postedAs.name,
+                  uid: data.postedAs.uid,
+                  text: data.text.split('\n'),
+                  time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
+                };
+                posts.push(post);
+                self.loadedAt = data.createdAt;
+              }
+              $('#loading').fadeOut(400);
+            });
+            self.posts = self.posts.concat(posts);
+            riot.update();
+
+            $('.wrap-loading-more').slideUp(400);
+
+            // 読み込める投稿がなくなったら
+            console.log('posts', posts);
+            self.isLoading = false;
+            if(posts[0]==undefined) self.enableLoading = false;
+        });
+      } // if(self.enableLoading)
     }
 
     if(session.user){ 

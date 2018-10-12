@@ -60,9 +60,11 @@ riot.route('/global-timeline', function(tagName) {
 
   if(riot.enableReloadContent){
     setTimeout(function() {
-      $('content').addClass('not-opacity');
-      riot.mount('content', 'page-global-timeline', {content: 'content'});
-      riot.update();
+      if(session.user){
+        $('content').addClass('not-opacity');
+        riot.mount('content', 'page-global-timeline', {content: 'content'});
+        riot.update();
+      }
     }, 400);
   }else{
     riot.enableReloadContent = true;
@@ -83,10 +85,12 @@ riot.route('/mypage', function(tagName) {
 
   if(riot.enableReloadContent){
     setTimeout(function() {
-      $('content').addClass('not-opacity');
-      var uid = session.user.uid;
-      riot.mount('content', 'page-account', {uid: uid});
-      riot.update();
+      if(session.user){
+        $('content').addClass('not-opacity');
+        var uid = session.user.uid;
+        riot.mount('content', 'page-account', {uid: uid});
+        riot.update();
+      }
     }, 400);
   }else{
     riot.enableReloadContent = true;

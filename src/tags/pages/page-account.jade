@@ -7,6 +7,10 @@ page-account
       //p(onclick='{changeTab.bind(this, "fav")}').tab-button.py4 Favorite
     div.wrap-posts
       module-post-card(each='{item in posts}' content='{item}')
+      div.wrap-loading-more
+        div.f.fh
+          atom-now-loading-icon
+  atom-notification-hack
 
 
 
@@ -20,6 +24,7 @@ page-account
         height: 100%;
         background: @primaryBg;
         .tab {
+          position: relative;
           p {
             width: 100%;
             text-align: center;
@@ -34,6 +39,9 @@ page-account
         }
         .wrap-posts {
           margin-bottom: 48px;
+          .wrap-loading-more {
+            display: none;
+          }
         }
       }
     }
@@ -41,6 +49,11 @@ page-account
   script.
     
     var self = this;
+
+    this.posts = [];
+    this.loadedAt = new Date();
+    this.enableLoading = true;
+    this.isLoading = false;
 
     this.on('mount', function(){
 
@@ -57,6 +70,25 @@ page-account
         });
 
         riot.enableReloadContent = false;
+      }
+      
+      var content
+      if(window.location.hash.indexOf('#users') == 0){
+        content = document.getElementsByTagName("modal-content")[0];
+      }else if(window.location.hash=='#mypage'){
+        content = document.getElementsByTagName("content")[0];
+      }
+
+      content.onscroll = function(e){
+        //if(window.location.hash=='#global-timeline'){
+          var scrollValue = this.scrollTop;
+          var scrollHeight = this.scrollHeight;
+          var offsetHeight = this.offsetHeight;
+          if(scrollValue - (scrollHeight-offsetHeight) == 0){
+            console.log("more");
+            self.loadPosts(7, self.loadedAt);
+          }
+        //}
       }
     });
 
@@ -76,7 +108,8 @@ page-account
       // TO DO: Get Data by tab here
       switch(tab_type) {
         case 'post':
-          this.getPosts(14);
+          this.loadedAt = new Date();
+          this.loadPosts(14, this.loadedAt);
         break;
         case 'fav':
 
@@ -85,40 +118,51 @@ page-account
 
     }
 
-    this.getPosts = function(limitNum) {
-      service.db.collection("posts")
-        .where("postedAs.uid", "==", this.uid)
-        .orderBy("createdAt", 'desc')
-        .limit(limitNum).get().then(function(querySnapshot) {
-          
-          var posts = [];
-          querySnapshot.forEach(function(doc) {
-            if(doc.id){
-              var docId = doc.id;
-              var data = doc.data();
-              var post = {
-                postId: doc.id,
-                iconSrc: data.postedAs.imgUrl,
-                authorId: data.author,
-                name: data.postedAs.name,
-                uid: data.postedAs.uid,
-                text: data.text.split('\n'),
-                time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
-                docId: docId,
-              };
-              posts.push(post);
+    this.loadPosts = function(limitNum, when) {
+      if(self.enableLoading && !(self.isLoading)){
+        self.isLoading = true;
+        $('.wrap-loading-more').slideDown(400);
+
+        service.db.collection("posts")
+          .where("postedAs.uid", "==", this.uid)
+          .orderBy("createdAt", 'desc')
+          .where("createdAt", "<", when)
+          .limit(limitNum).get().then(function(querySnapshot) {
+            
+            var posts = [];
+            querySnapshot.forEach(function(doc) {
+              if(doc.id){
+                var docId = doc.id;
+                var data = doc.data();
+                var post = {
+                  postId: doc.id,
+                  iconSrc: data.postedAs.imgUrl,
+                  authorId: data.author,
+                  name: data.postedAs.name,
+                  uid: data.postedAs.uid,
+                  text: data.text.split('\n'),
+                  time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
+                  docId: docId,
+                };
+                posts.push(post);
+                self.loadedAt = data.createdAt;
+              }
+            });
+
+            self.posts = self.posts.concat(posts);
+            riot.update();
+
+            $('.wrap-loading-more').slideUp(400);
+            self.isLoading = false;
+            if(posts[0]==undefined) self.enableLoading = false;
+
+            if(location.hash == '#mypage'){
+              $('#loading').fadeOut(400);
+            }else{
+              $('#loadingForModal').fadeOut(400);
             }
-          });
-
-          self.posts = posts;
-          riot.update();
-
-          if(location.hash == '#mypage'){
-            $('#loading').fadeOut(400);
-          }else{
-            $('#loadingForModal').fadeOut(400);
-          }
-      });
+        });
+      } // if(self.enableLoading)
     }
 
     if(location.hash == '#mypage'){
@@ -127,7 +171,7 @@ page-account
       $('#loadingForModal').fadeIn(400);
     }
     
-    this.getPosts(14);
+    this.loadPosts(4, this.loadedAt);
 
 
 
