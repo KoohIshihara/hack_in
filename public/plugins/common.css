@@ -1,5 +1,12 @@
 /*@import url('https://fonts.googleapis.com/earlyaccess/notosansjapanese.css');*/
 
+html {
+  overflow: hidden;
+}
+
+body {
+  overflow: hidden;
+}
 
 h1 {
   font-family: Avenir,"Open Sans","Helvetica Neue",Helvetica,Arial,Verdana,Roboto,"游ゴシック","Yu Gothic","游ゴシック体","YuGothic","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","Meiryo UI","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
@@ -51,15 +58,6 @@ textarea {
 :placeholder-shown {
   font-family: Avenir,"Open Sans","Helvetica Neue",Helvetica,Arial,Verdana,Roboto,"游ゴシック","Yu Gothic","游ゴシック体","YuGothic","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","Meiryo UI","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
   -webkit-font-smoothing: antialiased;
-}
-
-
-.en {
-  display: block;
-}
-
-.jp {
-  display: none;
 }
 
 .no-top-marker {

@@ -48,6 +48,21 @@ riot.route('/login', function(tagName) {
 
 riot.route('/global-timeline', function(tagName) {
 
+  // モーダルから戻ってきた時にアップデートが必要なタグをアップデート
+  if(riot.needUpdateTag){
+    var root = riot.needUpdateTag.root;
+    var parentDiv = root.parentElement;
+
+    var newElementName = 'for-update-' + Math.floor(Math.random()*100000);
+    var newElement = document.createElement(newElementName);
+    
+    parentDiv.appendChild(newElement);
+
+    //$(root).hide();
+    riot.needUpdateTag.unmount();
+    riot.mount(newElement, 'module-post-card', {content: riot.needUpdateContent});
+  }
+
   if(riot.enableFadeIn) $('content').removeClass('not-opacity');
 
   riot.enableFadeIn = true;
@@ -61,6 +76,7 @@ riot.route('/global-timeline', function(tagName) {
   if(riot.enableReloadContent){
     setTimeout(function() {
       if(session.user){
+        console.log('reload global-timeline');
         $('content').addClass('not-opacity');
         riot.mount('content', 'page-global-timeline', {content: 'content'});
         riot.update();
@@ -121,9 +137,28 @@ riot.route('/users/*', function(tagName) {
   riot.update();
 })
 
+riot.route('/posts/*', function(tagName) {
+  riot.mount('header', 'util-header', {status: 'back_with_edit'});
+  riot.mount('modal-content', 'page-post', {postid: tagName});
+  riot.update();
+})
+
 riot.route('/create-post', function(tagName) {
   riot.mount('header', 'util-header', {status: 'create_post'});
-  riot.mount('modal-content', 'page-create-post', {content: 'content'});
+  riot.mount('modal-content', 'page-create-post', {
+    placeholder: "What's happening?"
+  });
+  riot.update();
+})
+
+riot.route('/create-comment/*', function(postId) {
+  riot.mount('header', 'util-header', {
+    status: 'create_comment',
+    postId: postId
+  });
+  riot.mount('modal-content', 'page-create-post', {
+    placeholder: "Your reply...",
+  });
   riot.update();
 })
 
