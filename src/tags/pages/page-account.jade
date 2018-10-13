@@ -7,7 +7,7 @@ page-account
       //p(onclick='{changeTab.bind(this, "fav")}').tab-button.py4 Favorite
     div.wrap-posts
       module-post-card(each='{item in posts}' content='{item}')
-      div.wrap-loading-more
+      div.wrap-loading-more-account
         div.f.fh
           atom-now-loading-icon
   atom-notification-hack
@@ -39,7 +39,7 @@ page-account
         }
         .wrap-posts {
           margin-bottom: 48px;
-          .wrap-loading-more {
+          .wrap-loading-more-account {
             display: none;
           }
         }
@@ -121,7 +121,7 @@ page-account
     this.loadPosts = function(limitNum, when) {
       if(self.enableLoading && !(self.isLoading)){
         self.isLoading = true;
-        $('.wrap-loading-more').slideDown(400);
+        $('.wrap-loading-more-account').slideDown(400);
 
         service.db.collection("posts")
           .where("postedAs.uid", "==", this.uid)
@@ -152,7 +152,7 @@ page-account
             self.posts = self.posts.concat(posts);
             riot.update();
 
-            $('.wrap-loading-more').slideUp(400);
+            $('.wrap-loading-more-account').slideUp(400);
             self.isLoading = false;
             if(posts[0]==undefined) self.enableLoading = false;
 
@@ -171,7 +171,7 @@ page-account
       $('#loadingForModal').fadeIn(400);
     }
     
-    this.loadPosts(4, this.loadedAt);
+    this.loadPosts(14, this.loadedAt);
 
 
 

@@ -47,7 +47,9 @@ item-unlike
     this.counter = 0;
 
     // unlikeする
-    this.postunlike = function(){
+    this.postunlike = function(e){
+
+      e.stopPropagation();
 
       var unlikeObj = {
         from: session.user.uid,

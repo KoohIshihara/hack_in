@@ -47,7 +47,9 @@ item-alike
     this.counter = 0;
 
     // alikeする
-    this.postAlike = function(){
+    this.postAlike = function(e){
+      
+      e.stopPropagation();
 
       var alikeObj = {
         from: session.user.uid,

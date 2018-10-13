@@ -1,4 +1,4 @@
-module-post-card(onclick='{toPostPage.bind(this, opts.content.postId)}')
+module-comment-card
   div.wrap-module.px12.pt6.pb12
     div.wrap-info.py6.mb6.f.fm.flex-between
       div.f.fm
@@ -7,7 +7,7 @@ module-post-card(onclick='{toPostPage.bind(this, opts.content.postId)}')
         div
           p.name {opts.content.name}
           p.created-at {opts.content.time}
-      div(onclick='{toCreateComment.bind(this, opts.content.postId)}').wrap-comment.f.fh
+      //div(onclick='{toCommentPage.bind(this, opts.content.postId)}').wrap-comment.f.fh
         item-comment(content='{commentObj}')
 
     div.wrap-text.mb8
@@ -63,7 +63,7 @@ module-post-card(onclick='{toPostPage.bind(this, opts.content.postId)}')
     };
 
     this.on('mount', function(){
-      
+
     });
 
     this.toAccountPage = function(uid, e){
@@ -76,18 +76,18 @@ module-post-card(onclick='{toPostPage.bind(this, opts.content.postId)}')
       window.location.href = `./#users/${uid}`;
     }
 
-    this.toCreateComment = function(postId, e){
+    /*
+    this.toCommentPage = function(postId, e){
       e.stopPropagation();
 
+      console.log('postId', postId);
       var postId = postId;
       window.location.href = `./#create-comment/${postId}`;
     }
 
     this.toPostPage = function(postId, e){
-      riot.needUpdateTag = self;
-      riot.needUpdateContent = opts.content;
-
+      console.log('postId', postId);
       var postId = postId;
       window.location.href = `./#posts/${postId}`;
     }
-
+    */

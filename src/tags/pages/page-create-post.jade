@@ -3,7 +3,7 @@ page-create-post
     div.wrap-img
       div.img
         img(src='{iconSrc}')
-    textarea(placeholder="What's happening?", onkeyup="{checkLetPost}")#postInput
+    textarea(placeholder="{opts.placeholder}", onkeyup="{checkLetPost}")#postInput
 
   style(scoped, type='less').
     @import "public/stylesheets/main.less";

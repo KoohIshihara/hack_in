@@ -12,6 +12,12 @@ util-header
       a(onclick='{sendPost}').f.fh
         p.cta#postButton Post
 
+    div(if="{status == 'create_comment'}").container.f.fm.flex-between
+      a(onclick='{toBack}').wrap-img.f.fh
+        img(src='{backSrc}')
+      a(onclick='{sendComment}').f.fh
+        p.cta#postButton Reply
+
     div(if="{status == 'back'}").container.f.fm.flex-between
       a(onclick='{toBack}').wrap-img.f.fh
         img(src='{backSrc}')
@@ -68,7 +74,10 @@ util-header
 
   script.
 
+    var self = this;
+
     this.status = opts.status;
+    this.targetId = opts.postId;
 
     this.on('mount', function(){
       if('user' in session){
@@ -108,8 +117,40 @@ util-header
               console.error("Error adding document: ", error);
               alert('Failed to Post');
             });
-
         }
+
+
+        // create_comment
+        this.sendComment = function() {
+          var textarea = document.getElementById('postInput');
+          var value = textarea.value;
+          console.log(value);
+          if(value=='') return;
+
+          var commentObj = {
+            author: session.user.uid,
+            postedAs: session.user.currentUser,
+            text: value,
+            imgUrls: [],
+            createdAt: new Date(),
+            postId: self.targetId,
+            to: self.targetId,
+          };
+          
+          $('#loadingForModal').fadeIn(400);
+          service.db.collection("comments").add(commentObj)
+            .then(function(docRef) {
+              console.log("Document written with ID: ", docRef.id);
+              riot.enableReloadContent = true;
+              window.history.back();
+              $('#loadingForModal').fadeOut(400);
+            })
+            .catch(function(error) {
+              console.error("Error adding document: ", error);
+              alert('Failed to Post');
+            });
+        }
+
 
         this.toBack = function() {
           window.history.back();

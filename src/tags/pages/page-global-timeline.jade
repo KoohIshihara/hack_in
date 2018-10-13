@@ -1,6 +1,7 @@
 page-global-timeline
   div.wrap-page#wrapTimeline
-    module-post-card(each='{item in posts}' content='{item}')
+    div(each='{item in posts}')
+      module-post-card(content='{item}')
     div.wrap-loading-more
       div.f.fh
         atom-now-loading-icon
@@ -39,7 +40,7 @@ page-global-timeline
           var offsetHeight = this.offsetHeight;
           if(scrollValue - (scrollHeight-offsetHeight) == 0){
             console.log("more");
-            loadPosts(14, self.loadedAt);
+            loadPosts(7, self.loadedAt);
           }
         }
       }
@@ -169,6 +170,7 @@ page-global-timeline
       postNewUser();
       session.isNewUser = false;
     }
-    
+
+
   
 

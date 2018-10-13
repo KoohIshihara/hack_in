@@ -1,0 +1,47 @@
+item-comment
+  div.wrap-item.f.fh
+    img(src='./img/icon/comment.svg').mr4
+    p.num {commentNum}
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      .wrap-item {
+        img {
+          width: 26px;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.commentNum = 0;
+    var targetPostId = opts.content.postId;
+
+    service.db.collection("comments")
+      .orderBy("createdAt", 'desc')
+      .where("to", "==", targetPostId)
+      .get().then(function(querySnapshot) {
+        var comments = [];
+        querySnapshot.forEach(function(doc) {
+          if(doc.id){
+            var data = doc.data();
+            var comment = {
+              postId: doc.id,
+              iconSrc: data.postedAs.imgUrl,
+              authorId: data.author,
+              name: data.postedAs.name,
+              uid: data.postedAs.uid,
+              text: data.text.split('\n'),
+              time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
+            };
+            comments.push(comment);
+          }
+          $('#loading').fadeOut(400);
+        });
+        self.commentNum = comments.length;
+        riot.update();
+    });
