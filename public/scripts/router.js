@@ -61,6 +61,9 @@ riot.route('/global-timeline', function(tagName) {
     //$(root).hide();
     riot.needUpdateTag.unmount();
     riot.mount(newElement, 'module-post-card', {content: riot.needUpdateContent});
+
+    riot.needUpdateTag = undefined;
+    riot.needUpdateContent = undefined;
   }
 
   if(riot.enableFadeIn) $('content').removeClass('not-opacity');
@@ -72,7 +75,7 @@ riot.route('/global-timeline', function(tagName) {
   // ヘッターの中身の指定
   riot.mount('header', 'util-header', {status: 'normal'});
   riot.update();
-  
+
   if(riot.enableReloadContent){
     setTimeout(function() {
       if(session.user){
