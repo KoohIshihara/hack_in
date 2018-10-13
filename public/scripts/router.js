@@ -72,7 +72,7 @@ riot.route('/global-timeline', function(tagName) {
   // ヘッターの中身の指定
   riot.mount('header', 'util-header', {status: 'normal'});
   riot.update();
-
+  
   if(riot.enableReloadContent){
     setTimeout(function() {
       if(session.user){
