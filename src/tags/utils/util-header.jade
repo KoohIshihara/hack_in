@@ -141,7 +141,6 @@ util-header
           service.db.collection("comments").add(commentObj)
             .then(function(docRef) {
               console.log("Document written with ID: ", docRef.id);
-              riot.enableReloadContent = true;
               window.history.back();
               $('#loadingForModal').fadeOut(400);
             })

@@ -79,6 +79,11 @@ module-post-card(onclick='{toPostPage.bind(this, opts.content.postId)}')
     this.toCreateComment = function(postId, e){
       e.stopPropagation();
 
+      riot.needUpdateTag = self;
+      riot.needUpdateContent = opts.content;
+
+      riot.enableReloadContent = false;
+
       var postId = postId;
       window.location.href = `./#create-comment/${postId}`;
     }
