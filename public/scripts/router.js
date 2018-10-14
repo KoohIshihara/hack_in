@@ -53,14 +53,15 @@ riot.route('/global-timeline', function(tagName) {
     var root = riot.needUpdateTag.root;
     var parentDiv = root.parentElement;
 
-    var newElementName = 'for-update-' + Math.floor(Math.random()*100000);
-    var newElement = document.createElement(newElementName);
-    
-    parentDiv.appendChild(newElement);
+    if(parentDiv){ // アカウント　＞　投稿詳細　＞　戻る　＞　戻る　でundefinedになる
+      var newElementName = 'for-update-' + Math.floor(Math.random()*100000);
+      var newElement = document.createElement(newElementName);
+      
+      parentDiv.appendChild(newElement);
 
-    //$(root).hide();
-    riot.needUpdateTag.unmount();
-    riot.mount(newElement, 'module-post-card', {content: riot.needUpdateContent});
+      riot.needUpdateTag.unmount();
+      riot.mount(newElement, 'module-post-card', {content: riot.needUpdateContent});
+    }
 
     riot.needUpdateTag = undefined;
     riot.needUpdateContent = undefined;
