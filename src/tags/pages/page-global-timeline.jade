@@ -109,13 +109,15 @@ page-global-timeline
         name: user.displayName,
         uid: user.uid,
         author: user.uid,
-        auth_token: session.token,
+        //auth_token: session.token,
         profileHistory: ['No Profile'],
         email: user.email,
         imgUrl: user.photoURL + '?width=420&amp;height=420',
         hackedCounter: 0,
         follow: [],
         follower: [],
+        createdAt: new Date(),
+        latestLogin: new Date(),
         //hackedUid: user.uid,
         currentUser: {
           name: user.displayName,
@@ -164,11 +166,27 @@ page-global-timeline
       riot.update();
       
     }
-    
 
     if(session.isNewUser){
       postNewUser();
       session.isNewUser = false;
+    }else{ // それ以外ならログインを更新
+      // 自分のlatestLoginを更新
+      service.db.collection("users")
+        .where("uid", "==", session.user.uid)
+        .limit(1)
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            var id = doc.id;
+            session.user.latestLogin = new Date();
+            service.db.collection("users").doc(id).set(session.user);
+          });
+        })
+        .catch(function(error) {
+            // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
     }
 
 

@@ -111,7 +111,7 @@ page-post
 
     // 紐づいたコメントを取得
     service.db.collection("comments")
-      .orderBy("createdAt", 'desc')
+      .orderBy("createdAt", 'asc')
       .where("to", "==", postId)
       .get().then(function(querySnapshot) {
         var comments = [];

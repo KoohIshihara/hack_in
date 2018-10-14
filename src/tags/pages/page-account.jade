@@ -3,13 +3,15 @@ page-account
     item-profile-icon(uid='{uid}')
     div.tab.f.flex-around
       // ここに .active つけるとタブわけになるよ
-      p(onclick='{changeTab.bind(this, "post")}').tab-button.py4 Posts
-      //p(onclick='{changeTab.bind(this, "fav")}').tab-button.py4 Favorite
-    div.wrap-posts
+      p(onclick='{changeTab.bind(this, "post")}').tab-button.py4.active Posts
+      p(onclick='{changeTab.bind(this, "comment")}').tab-button.py4 Comments
+    div.wrap-posts.wrap-tab
       module-post-card(each='{item in posts}' content='{item}')
       div.wrap-loading-more-account
         div.f.fh
           atom-now-loading-icon
+    div.wrap-comments.wrap-tab
+      module-comment-card(each='{item in comments}' content='{item}')
   atom-notification-hack
 
 
@@ -29,12 +31,12 @@ page-account
             width: 100%;
             text-align: center;
             border-bottom: solid 0.8px;
-            color: @primaryBlack;
+            color: @primaryGray;
           }
           .active {
-            border-bottom: solid 0.8px;
-            color: @ctaColor !important;
-            font-weight: 500;
+            border-bottom: solid 2px;
+            color: @primaryBlack !important;
+            font-weight: bold;
           }
         }
         .wrap-posts {
@@ -54,6 +56,10 @@ page-account
     this.loadedAt = new Date();
     this.enableLoading = true;
     this.isLoading = false;
+
+    this.comments = [];
+
+    this.currentTabType = "post";
 
     this.on('mount', function(){
 
@@ -86,7 +92,11 @@ page-account
           var offsetHeight = this.offsetHeight;
           if(scrollValue - (scrollHeight-offsetHeight) == 0){
             console.log("more");
-            self.loadPosts(7, self.loadedAt);
+            if(this.currentTabType=="post"){
+              self.loadPosts(7, self.loadedAt);
+            }else if(this.currentTabType=="comment"){
+              // TO DO: scroll 最下部でmore loadingをして更新できるようにする
+            }
           }
         //}
       }
@@ -108,13 +118,20 @@ page-account
       // TO DO: Get Data by tab here
       switch(tab_type) {
         case 'post':
+          $('.wrap-tab').hide();
+          $('.wrap-posts').show();
           this.loadedAt = new Date();
           this.loadPosts(14, this.loadedAt);
         break;
-        case 'fav':
-
+        case 'comment':
+          $('.wrap-tab').hide();
+          $('.wrap-comments').show();
+          this.loadedAt = new Date();
+          this.loadComments(14, this.loadedAt);
         break;
       }
+
+      this.currentTabType = tab_type;
 
     }
 
@@ -163,6 +180,36 @@ page-account
             }
         });
       } // if(self.enableLoading)
+    }
+
+    // TO DO: scroll 最下部でmore loadingをして更新できるようにする
+    this.loadComments = function() {
+      service.db.collection("comments")
+        .where("postedAs.uid", "==", this.uid)
+        .orderBy("createdAt", 'desc')
+        .limit(30)
+        .get().then(function(querySnapshot) {
+          var comments = [];
+          querySnapshot.forEach(function(doc) {
+            if(doc.id){
+              var data = doc.data();
+              var comment = {
+                postId: doc.id,
+                iconSrc: data.postedAs.imgUrl,
+                authorId: data.author,
+                name: data.postedAs.name,
+                uid: data.postedAs.uid,
+                text: data.text.split('\n'),
+                time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
+              };
+              comments.push(comment);
+            }
+            $('#loading').fadeOut(400);
+          });
+
+        self.comments = comments;
+        riot.update();
+      });
     }
 
     if(location.hash == '#mypage'){
