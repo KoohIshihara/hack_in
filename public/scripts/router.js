@@ -142,7 +142,7 @@ riot.route('/users/*', function(tagName) {
 })
 
 riot.route('/posts/*', function(tagName) {
-  riot.mount('header', 'util-header', {status: 'back_with_edit'});
+  riot.mount('header', 'util-header', {status: 'post_detail'});
   riot.mount('modal-content', 'page-post', {postid: tagName});
   riot.update();
 })
