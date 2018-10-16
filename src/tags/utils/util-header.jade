@@ -28,6 +28,12 @@ util-header
       a(onclick='{toPost}').wrap-img.f.fh
         img(src='{postSrc}')
 
+    div(if="{status == 'post_detail'}").container.f.fm.flex-between
+      a(onclick='{toBack}').wrap-img.f.fh
+        img(src='{backSrc}')
+      a(onclick='{toCreateComment}').wrap-img.f.fh
+        img(src='{commentSrc}')
+
 
 
   style(scoped, type='less').
@@ -77,8 +83,7 @@ util-header
     var self = this;
 
     this.status = opts.status;
-    this.targetId = opts.postId;
-
+    console.log(this.status);
     this.on('mount', function(){
       if('user' in session){
 
@@ -90,7 +95,6 @@ util-header
         }
         
         // create_post
-        this.backSrc = './img/icon/back.svg';
         this.sendPost = function() {
           var textarea = document.getElementById('postInput');
           var value = textarea.value;
@@ -119,8 +123,14 @@ util-header
             });
         }
 
-
+        
         // create_comment
+        this.commentSrc = './img/icon/comment.svg';
+        this.toCreateComment = function() {
+          var targetId = riot.needUpdateContent.postId; // タイムラインでクリックした時にpostIdは格納される
+          window.location.href = `./#create-comment/${targetId}`;
+        }
+
         this.sendComment = function() {
           var textarea = document.getElementById('postInput');
           var value = textarea.value;
@@ -133,8 +143,8 @@ util-header
             text: value,
             imgUrls: [],
             createdAt: new Date(),
-            postId: self.targetId,
-            to: self.targetId,
+            postId: riot.needUpdateContent.postId, //self.targetId,
+            to: riot.needUpdateContent.postId, //self.targetId,
           };
           
           $('#loadingForModal').fadeIn(400);
@@ -151,6 +161,7 @@ util-header
         }
 
 
+        this.backSrc = './img/icon/back.svg';
         this.toBack = function() {
           window.history.back();
         }

@@ -6,8 +6,10 @@ item-profile-icon(data-doc-id='{docId}')
           div.wrap-img
             img(src='{iconSrc}').mb8
         p.name.mb16 {this.name}
-        div.mb16.f.fc
+        div.mb12.f.fc
           atom-hack-in(uid='{uid}')
+        div.mb32.f.fc
+          atom-follow(uid='{uid}')
         p.profile {this.profile}
 
   style(scoped, type='less').

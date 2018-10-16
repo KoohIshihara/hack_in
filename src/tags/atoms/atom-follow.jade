@@ -1,0 +1,152 @@
+atom-follow(data-uid='{opts.uid}')
+  div(onclick='{action}' class='{button.status}').wrap-atom.px7.py3.f.fm
+    i(class='{button.icon}').mr8
+    p.mt1 {button.label}
+
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      cursor: pointer;
+      .wrap-atom {
+        width: 104px;
+        border: solid 1.4px @primaryBlack;
+        border-radius: 3px;
+      }
+      .normal {
+        background: @primaryBlack;
+        i {
+          color: #FFF;
+        }
+        p {
+          font-weight: 500;
+          color: #FFF;
+          width: 100%;
+          text-align: center;
+        }
+      }
+      .following {
+        background: #FFF;
+        /*pointer-events: none;*/
+        i {
+          color: @primaryBlack;
+        }
+        p {
+          font-weight: 500;
+          color: @primaryBlack;
+          width: 100%;
+          text-align: center;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+    this.action;
+
+    self.update();
+
+    this.follow = async (e) => {
+
+      var tag = e.target;
+      var uid = $(tag).parents('atom-follow')[0].dataset.uid;
+
+      // フォローしていなければフォローする
+      await service.db.collection("follows")
+        .where("from", "==", session.user.uid)
+        .where("to", "==", opts.uid)
+        .limit(1)
+        .get()
+        .then(function(querySnapshot) {
+          if(querySnapshot.docs[0]==undefined){
+
+            var followObj = {
+              from: session.user.uid,
+              to: uid,
+              createdAt: new Date(),
+            };
+            service.db.collection("follows").add(followObj);
+            console.log("complete folow");
+          }
+        }).catch(function(error) {
+          console.log("Error getting documents: ", error);
+        });
+
+      self.button = {
+        status: 'following',
+        icon: 'icon-hacked',
+        label: 'Following'
+      };
+      this.action = this.releaseFollowing;
+      self.update();
+
+    } // this.follow
+
+
+    this.releaseFollowing = async (e) => {
+      console.log("release following");
+
+      // フォローを削除する
+      await service.db.collection("follows")
+        .where("from", "==", session.user.uid)
+        .where("to", "==", opts.uid)
+        .limit(1)
+        .get()
+        .then(function(querySnapshot) {
+          
+          var docId = querySnapshot.docs[0].id;
+          service.db.collection("follows").doc(docId).delete().then(function(q){
+            console.log("released");
+          })
+
+        }).catch(function(error) {
+          console.log("Error getting documents: ", error);
+        });
+
+      self.button = {
+        status: 'normal',
+        icon: 'icon-hack-in',
+        label: 'Follow'
+      };
+      this.action = this.follow;
+      self.update();
+    } // this.releaseFollowing
+
+    this.button = {
+      status: 'normal',
+      icon: 'icon-hacked',
+      label: 'Follow'
+    };
+    this.action = this.follow;
+
+
+    // 現在フォローしているかどうか
+    if(session.user && opts.uid){
+      service.db.collection("follows")
+        .where("from", "==", session.user.uid)
+        .where("to", "==", opts.uid)
+        .limit(1)
+        .get()
+        .then(function(querySnapshot) {
+          
+          // フォローしているユーザーなら
+          if(querySnapshot.docs[0] != undefined){
+
+            self.button = {
+              status: 'following',
+              icon: 'icon-hacked',
+              label: 'Following'
+            };
+            self.action = self.releaseFollowing;
+            self.update();
+          }
+
+        }).catch(function(error) {
+          console.log("Error getting documents: ", error);
+        });
+    }
+
+
+

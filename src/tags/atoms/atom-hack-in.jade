@@ -1,6 +1,6 @@
 atom-hack-in(data-uid='{opts.uid}')
-  div(onclick='{hackIn}' class='{button.status}').wrap-atom.px7.py3.f.fm.flex-around
-    i(class='{button.icon}')
+  div(onclick='{action}' class='{button.status}').wrap-atom.px7.py3.f.fm
+    i(class='{button.icon}').mr8
     p.mt1 {button.label}
 
 
@@ -10,7 +10,7 @@ atom-hack-in(data-uid='{opts.uid}')
     :scope {
       cursor: pointer;
       .wrap-atom {
-        width: 100px;
+        width: 104px;
         border: solid 1.4px @primaryBlack;
         border-radius: 3px;
       }
@@ -22,17 +22,21 @@ atom-hack-in(data-uid='{opts.uid}')
         p {
           font-weight: 500;
           color: #FFF;
+          width: 100%;
+          text-align: center;
         }
       }
       .hacked {
         background: #FFF;
-        pointer-events: none;
+        /*pointer-events: none;*/
         i {
           color: @primaryBlack;
         }
         p {
           font-weight: 500;
           color: @primaryBlack;
+          width: 100%;
+          text-align: center;
         }
       }
     }
@@ -40,21 +44,7 @@ atom-hack-in(data-uid='{opts.uid}')
   script.
 
     var self = this;
-
-    // 現在、ハックしているアカウントかどうか
-    if('user' in session && opts.uid==session.user.currentUser.uid){
-      this.button = {
-        status: 'hacked',
-        icon: 'icon-hacked',
-        label: 'Hacked   '
-      };
-    }else{
-      this.button = {
-        status: 'normal',
-        icon: 'icon-hack-in',
-        label: 'Hack In',
-      };
-    }
+    this.action;
 
     self.update();
 
@@ -82,11 +72,12 @@ atom-hack-in(data-uid='{opts.uid}')
               self.button = {
                 status: 'hacked',
                 icon: 'icon-hacked',
-                label: 'Hacked   '
+                label: 'Hack Out'
               };
-
+              self.action = self.hackOut;
+              
               // Hack Inしたことを通知
-              riot.notificationOfHack(hackedUser.name);
+              riot.notificationOfHack('in ' + hackedUser.name);
 
               // モーダルページでない場合はヘッダーもアップデート
               if(location.hash.indexOf('#users') == -1){
@@ -116,8 +107,104 @@ atom-hack-in(data-uid='{opts.uid}')
           console.error("Error updating document: ", error);
         });
 
-      
+
+      if(session.user.uid != session.user.currentUser.uid){
+        var hackObj = {
+          from: session.user.uid,
+          to: session.user.currentUser.uid,
+          createdAt: new Date(),
+        };
+
+        await service.db.collection("hacks").add(hackObj)
+          .then(function(docRef) {
+            console.log("Document written with ID: ", docRef.id);
+          })
+          .catch(function(error) {
+            console.error("Error adding document: ", error);
+            alert('Failed to Sign Up');
+            logout();
+          });
+      }
     }
+
+    
+
+    this.hackOut = async (e) => {
+      var user = session.user;
+      var preHackedUserName = user.currentUser.name;
+
+      var hackedUser = {
+        uid: user.uid,
+        name: user.name,
+        profileHistory: user.profileHistory,
+        imgUrl: user.imgUrl,
+      };
+
+      user.currentUser = hackedUser;
+
+      // 自分のcurrentUserを更新
+      await service.db.collection("users")
+        .where("uid", "==", session.user.uid)
+        .limit(1)
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            var user = session.user;
+            var hackedUser = {
+              uid: user.uid,
+              name: user.name,
+              profileHistory: user.profileHistory,
+              imgUrl: user.imgUrl,
+            };
+
+            session.user.currentUser = hackedUser;
+
+            var id = doc.id;
+            service.db.collection("users").doc(id).set(session.user);
+
+            console.log('hack out',session.user);
+
+            // Hack Outしたことを通知
+            riot.notificationOfHack('out ' + preHackedUserName);
+
+            self.button = {
+              status: 'normal',
+              icon: 'icon-hack-in',
+              label: 'Hack In'
+            };
+            self.action = self.hackIn;
+            // モーダルページでない場合はヘッダーもアップデート
+            if(location.hash.indexOf('#users') == -1){
+              riot.mount('header', 'util-header', {status: 'normal'});
+            }
+            riot.update();
+          });
+        })
+        .catch(function(error) {
+            // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
+
+    }
+
+
+    // 現在、ハックしているアカウントかどうか
+    if('user' in session && opts.uid==session.user.currentUser.uid){
+      this.button = {
+        status: 'hacked',
+        icon: 'icon-hacked',
+        label: 'Hack Out'
+      };
+      this.action = this.hackOut;
+    }else{
+      this.button = {
+        status: 'normal',
+        icon: 'icon-hack-in',
+        label: 'Hack In',
+      };
+      this.action = this.hackIn;
+    }
+
 
 
 
