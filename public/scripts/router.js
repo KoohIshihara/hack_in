@@ -166,7 +166,17 @@ riot.route('/create-comment/*', function(postId) {
   riot.update();
 })
 
+riot.route('/follow/*', function(tagName) {
+  riot.mount('header', 'util-header', {status: 'back_with_edit'});
+  riot.mount('modal-content', 'page-follow', {uid: tagName});
+  riot.update();
+})
 
+riot.route('/follower/*', function(tagName) {
+  riot.mount('header', 'util-header', {status: 'back_with_edit'});
+  riot.mount('modal-content', 'page-follower', {uid: tagName});
+  riot.update();
+})
 
 
 riot.route(function(tagName) {

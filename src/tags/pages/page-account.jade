@@ -181,7 +181,7 @@ page-account
       } // if(self.enableLoading)
     }
 
-    // TO DO: scroll 最下部でmore loadingをして更新できるようにする
+    // TO DO: scroll 最下部でコメントタブもmore loadingをして更新できるようにする
     this.loadComments = function() {
       service.db.collection("comments")
         .where("postedAs.uid", "==", this.uid)
@@ -193,7 +193,7 @@ page-account
             if(doc.id){
               var data = doc.data();
               var comment = {
-                postId: doc.id,
+                postId: data.postId,
                 iconSrc: data.postedAs.imgUrl,
                 authorId: data.author,
                 name: data.postedAs.name,

@@ -1,0 +1,33 @@
+item-user-icon
+  a(onclick='{toAccountPage.bind(this, opts.content.uid)}').wrap-img.mr12.f.fh
+    img(src='{opts.content.iconSrc}' alt='')
+
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      .wrap-img {
+        width: 42px;
+        height: 42px;
+        overflow: hidden;
+        border-radius: 50%;
+        img {
+          /*border-radius: 50%;
+          width: 42px;*/
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+
+  script.
+    
+    var self = this;
+
+    this.toAccountPage = function(uid, e){
+      e.stopPropagation();
+
+      var uid = uid;//e.target.dataset.uid;
+      window.location.href = `./#users/${uid}`;
+    }

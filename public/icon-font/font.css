@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?5hleu2');
-  src:  url('fonts/icomoon.eot?5hleu2#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?5hleu2') format('truetype'),
-    url('fonts/icomoon.woff?5hleu2') format('woff'),
-    url('fonts/icomoon.svg?5hleu2#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?go1fd3');
+  src:  url('fonts/icomoon.eot?go1fd3#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?go1fd3') format('truetype'),
+    url('fonts/icomoon.woff?go1fd3') format('woff'),
+    url('fonts/icomoon.svg?go1fd3#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,27 +24,56 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-post:before {
-  content: "\e906";
+.icon-add:before {
+  content: "\e900";
 }
 .icon-alike:before {
-  content: "\e907";
+  content: "\e901";
 }
-.icon-unlike:before {
-  content: "\e908";
+.icon-back:before {
+  content: "\e902";
 }
-.icon-hacked:before {
+.icon-comment-cpy:before {
   content: "\e903";
 }
-.icon-hack-in:before {
+.icon-comment:before {
   content: "\e904";
 }
 .icon-create-account:before {
-  content: "\e900";
+  content: "\e905";
 }
-.icon-timeline:before {
-  content: "\e901";
+.icon-fb-white:before {
+  content: "\e906";
+  color: #fff;
+}
+.icon-fb:before {
+  content: "\e907";
+  color: #fff;
+}
+.icon-fb1:before {
+  content: "\e908";
+}
+.icon-hack-in-logo:before {
+  content: "\e909";
+}
+.icon-hack-in:before {
+  content: "\e90a";
+}
+.icon-hacked:before {
+  content: "\e90b";
 }
 .icon-my-page:before {
-  content: "\e902";
+  content: "\e90c";
+}
+.icon-post:before {
+  content: "\e90d";
+}
+.icon-remove:before {
+  content: "\e90e";
+}
+.icon-timeline:before {
+  content: "\e90f";
+}
+.icon-unlike:before {
+  content: "\e910";
 }

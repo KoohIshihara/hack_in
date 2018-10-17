@@ -1,0 +1,35 @@
+[debug] [2018-10-17T05:14:47.296Z] ----------------------------------------------------------------------
+[debug] [2018-10-17T05:14:47.298Z] Command:       /Users/Kou/.nodebrew/node/v9.3.0/bin/node /Users/Kou/.nodebrew/current/bin/firebase deploy
+[debug] [2018-10-17T05:14:47.298Z] CLI Version:   3.18.5
+[debug] [2018-10-17T05:14:47.298Z] Platform:      darwin
+[debug] [2018-10-17T05:14:47.298Z] Node Version:  v9.3.0
+[debug] [2018-10-17T05:14:47.298Z] Time:          Wed Oct 17 2018 14:14:47 GMT+0900 (JST)
+[debug] [2018-10-17T05:14:47.298Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-10-17T05:14:47.312Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-10-17T05:14:47.312Z] > authorizing via signed-in user
+[debug] [2018-10-17T05:14:47.314Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-10-17T05:14:47.314Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ { refresh_token: '1/JLhLSNOy6dNuZzlRnSOJI749AbsxeBq-_PMrIZTOnERffULpygNaCP_zGxi-92dN',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Wed Oct 17 2018 14:14:47 GMT+0900 (JST)
+[debug] [2018-10-17T05:14:47.506Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-17T05:14:47.520Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/hack-in-kooh  
+  
+ Wed Oct 17 2018 14:14:47 GMT+0900 (JST)
+[debug] [2018-10-17T05:14:48.329Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-17T05:14:48.330Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/hack-in-kooh/tokens  
+  
+ Wed Oct 17 2018 14:14:48 GMT+0900 (JST)
+[debug] [2018-10-17T05:14:48.974Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'hack-in-kooh'...
+[info] 
+[info] i  deploying hosting
+[info] i  hosting: preparing public directory for upload...
+[debug] [2018-10-17T05:14:49.785Z] >>> HTTP REQUEST PUT https://deploy.firebase.com/v1/hosting/hack-in-kooh/uploads/-LP-ReU2cFJ_RgyCVEqO?fileCount=32&message=  
+  
+ Wed Oct 17 2018 14:14:49 GMT+0900 (JST)

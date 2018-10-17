@@ -65,6 +65,7 @@ page-post
     var self = this;
     this.postContent;
 
+
     this.on('mount', function(){
 
       if(location.hash != '#mypage'){
@@ -119,7 +120,7 @@ page-post
           if(doc.id){
             var data = doc.data();
             var comment = {
-              postId: doc.id,
+              postId: data.postId,
               iconSrc: data.postedAs.imgUrl,
               authorId: data.author,
               name: data.postedAs.name,

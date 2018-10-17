@@ -1,5 +1,5 @@
-atom-follow(data-uid='{opts.uid}')
-  div(onclick='{action}' class='{button.status}').wrap-atom.px7.py3.f.fm
+atom-follow-button
+  div(onclick='{action}' class='{button.status}' data-uid='{opts.uid}').wrap-atom.px7.py3.f.fm
     i(class='{button.icon}').mr8
     p.mt1 {button.label}
 
@@ -44,6 +44,7 @@ atom-follow(data-uid='{opts.uid}')
   script.
 
     var self = this;
+    this.uid = opts.uid;
     this.action;
 
     self.update();
@@ -51,36 +52,46 @@ atom-follow(data-uid='{opts.uid}')
     this.follow = async (e) => {
 
       var tag = e.target;
-      var uid = $(tag).parents('atom-follow')[0].dataset.uid;
+      self.uid = tag.dataset.uid;
 
       // フォローしていなければフォローする
-      await service.db.collection("follows")
+      var obj = await service.db.collection("follows")
         .where("from", "==", session.user.uid)
         .where("to", "==", opts.uid)
         .limit(1)
-        .get()
-        .then(function(querySnapshot) {
-          if(querySnapshot.docs[0]==undefined){
+        .get();
 
-            var followObj = {
-              from: session.user.uid,
-              to: uid,
-              createdAt: new Date(),
-            };
-            service.db.collection("follows").add(followObj);
-            console.log("complete folow");
-          }
-        }).catch(function(error) {
-          console.log("Error getting documents: ", error);
+      // ユーザーオブジェクト追加中
+      var userDocs = await service.db.collection("users")
+        .where("uid", "==", opts.uid)
+        .limit(1)
+        .get()
+        
+      var toUser = userDocs.docs[0].data();
+
+      if(obj.docs[0]==undefined){
+
+        var followObj = {
+          from: session.user.uid,
+          fromUser: session.user,
+          to: self.opts.uid,
+          toUser: toUser,
+          createdAt: new Date(),
+        };
+
+        await service.db.collection("follows").add(followObj).then(function(){
+          console.log("comp");
         });
 
-      self.button = {
-        status: 'following',
-        icon: 'icon-hacked',
-        label: 'Following'
-      };
-      this.action = this.releaseFollowing;
-      self.update();
+        self.button = {
+          status: 'following',
+          icon: 'icon-remove',
+          label: 'Following'
+        };
+        this.action = this.releaseFollowing;
+        self.update();
+
+      }
 
     } // this.follow
 
@@ -107,7 +118,7 @@ atom-follow(data-uid='{opts.uid}')
 
       self.button = {
         status: 'normal',
-        icon: 'icon-hack-in',
+        icon: 'icon-add',
         label: 'Follow'
       };
       this.action = this.follow;
@@ -116,7 +127,7 @@ atom-follow(data-uid='{opts.uid}')
 
     this.button = {
       status: 'normal',
-      icon: 'icon-hacked',
+      icon: 'icon-remove',
       label: 'Follow'
     };
     this.action = this.follow;
@@ -133,15 +144,22 @@ atom-follow(data-uid='{opts.uid}')
           
           // フォローしているユーザーなら
           if(querySnapshot.docs[0] != undefined){
-
             self.button = {
               status: 'following',
-              icon: 'icon-hacked',
+              icon: 'icon-remove',
               label: 'Following'
             };
             self.action = self.releaseFollowing;
-            self.update();
+          }else{
+            self.button = {
+              status: 'normal',
+              icon: 'icon-add',
+              label: 'Follow'
+            };
+            self.action = self.follow;
           }
+
+          self.update();
 
         }).catch(function(error) {
           console.log("Error getting documents: ", error);

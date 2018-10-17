@@ -1,0 +1,28 @@
+module-user-list.f.fc
+  div.wrap-module.f.fm.flex-between
+    div.f.fm
+      div.wrap-icon
+        item-user-icon(content='{iconContent}')
+      p.mr8 {opts.content.name}
+    div.wrap-button
+      atom-follow-button(uid='{opts.content.uid}')
+    
+    
+
+  style(scoped, type='less').
+    :scope {
+      border-bottom: solid .6px rgba(0,0,0,0.2);
+      .wrap-module {
+        width: 90%;
+        height: 64px;
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.iconContent = {
+      uid: opts.content.uid,
+      iconSrc: opts.content.imgUrl,
+    }

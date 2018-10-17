@@ -1,0 +1,44 @@
+atom-how-many-follow(onclick='{toFollow}')
+  div.wrap-atom
+    p.num {num}
+    p.label Follow
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      width: 120px;
+      .wrap-atom {
+        p {
+          text-align: center;
+        }
+        .num {
+          font-size: 18px;
+          font-weight: 500;
+          color: @primaryBlack;
+        }
+        .label {
+          color: @primaryGray;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+    this.num;
+
+    service.db.collection("follows")
+      .where("from", "==", opts.uid)
+      .get()
+      .then(function(querySnapshot) {
+        self.num = querySnapshot.docs.length;
+      }).catch(function(error) {
+        logout();
+        console.log("Error getting documents: ", error);
+      });
+
+    this.toFollow = function (){
+      var uid = opts.uid;
+      window.location.href = `./#follow/${uid}`;
+    }

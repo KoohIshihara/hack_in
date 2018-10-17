@@ -1,16 +1,22 @@
 item-profile-icon(data-doc-id='{docId}')
-  div.wrap-item.py40
+  div.wrap-item.py20
     div.wrap-icon.f.fh
       div.wrap-icon-content
         div.f.fc.m16
           div.wrap-img
             img(src='{iconSrc}').mb8
         p.name.mb16 {this.name}
-        div.mb12.f.fc
-          atom-hack-in(uid='{uid}')
-        div.mb32.f.fc
-          atom-follow(uid='{uid}')
-        p.profile {this.profile}
+        div.mb16.f.fc
+          div.wrap-buttons.f.flex-around
+            div.f.fc
+              atom-hack-in(uid='{uid}')
+            div(if='{showFollow}').f.fc
+              atom-follow-button(uid='{uid}')
+        div.mb16.f.fc
+          div.wrap-follow-follower.f.flex-around
+            atom-how-many-follow(uid='{uid}')
+            //atom-how-many-follow(uid='{uid}')
+        //p.profile.mb20 {this.profile}
 
   style(scoped, type='less').
     @import "public/stylesheets/main.less";
@@ -43,7 +49,13 @@ item-profile-icon(data-doc-id='{docId}')
               text-align: center;
               letter-spacing: 1px;
             }
-          }
+            .wrap-buttons {
+              width: 240px;
+            }
+            .wrap-follow-follower {
+              width: 240px;
+            }
+          }/* .wrap-icon-content */
         }
       }
     }
@@ -51,6 +63,8 @@ item-profile-icon(data-doc-id='{docId}')
   script.
     
     var self = this;
+
+    this.showFollow = true;
 
     // console.log('opts.uid', opts.uid);
 
@@ -80,3 +94,8 @@ item-profile-icon(data-doc-id='{docId}')
       });
     } // if(uid)
 
+    // 自分のページだったらフォローボタンは消す
+    if(session.user && opts.uid == session.user.uid){
+      this.showFollow = false;
+      this.update();
+    }
