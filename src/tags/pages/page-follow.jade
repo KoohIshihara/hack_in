@@ -53,6 +53,20 @@ page-follow
           console.log("Error getting documents: ", error);
         });
       
+
+      var promises = self.uids.map(uid =>{
+        return service.db.collection("users")
+          .where('uid', '==', uid)
+          .limit(1)
+          .get()
+          .then(function(querySnapshot){
+            return querySnapshot.docs[0].data();
+          });
+      })
+
+      self.users = await Promise.all(promises);
+
+      /*
       for(var i in self.uids){
         await service.db.collection("users")
           .where('uid', '==', self.uids[i])
@@ -62,6 +76,7 @@ page-follow
             self.users.push(querySnapshot.docs[0].data());
           });
       }
+      */
 
       for(var i in self.users){
         var listObj = {

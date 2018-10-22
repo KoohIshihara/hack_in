@@ -103,6 +103,20 @@ page-global-timeline
     // サインアップ時の処理
     async function postNewUser(){
       
+      var userExist = await service.db.collection("users")
+        .where("uid", "==", session.user.uid)
+        .limit(1)
+        .get()
+        .then(function(querySnapshot) {
+          if(querySnapshot.docs[0]){
+            return querySnapshot.docs[0].data();
+          }else{
+            return undefined;
+          }
+        });
+
+      if(userExist != undefined) return;
+
       var user = session.userFireauth;
 
       var userObj = {
@@ -139,6 +153,8 @@ page-global-timeline
           logout();
         });
 
+
+
       var postObj = {
         author: session.user.uid,
         postedAs: session.user.currentUser,
@@ -167,7 +183,11 @@ page-global-timeline
       
     }
 
+    postNewUser();
+
     if(session.isNewUser){
+
+
       postNewUser();
       session.isNewUser = false;
     }else{ // それ以外ならログインを更新
