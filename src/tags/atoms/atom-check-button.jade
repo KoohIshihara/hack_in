@@ -1,0 +1,46 @@
+atom-check-button
+  div.wrap-atom
+    i(onclick='{toggleCheck}').icon-check.active
+
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      .wrap-atom {
+        display: block;
+        i {
+          color: @primaryGray;
+        }
+        .active {
+          color: @ctaColor !important;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.uid = opts.uid;
+    this.isActive = true;
+
+    this.toggleCheck = function(e){
+
+      e.target.classList.toggle('active');
+
+      this.isActive = !(this.isActive);
+      if(this.isActive){
+        riot.toFollowUids.push(this.uid);
+      }else{
+        var changedToFollowUids = [];
+        for(var i=0; i<riot.toFollowUids.length; i++){
+          var uid = riot.toFollowUids[i];
+          if(this.uid != uid){
+            changedToFollowUids.push(uid);
+          }
+        }
+        riot.toFollowUids = changedToFollowUids;
+      }
+
+    }

@@ -1,0 +1,180 @@
+page-timeline
+  div.wrap-page#wrapTimeline
+    module-timeline-suggestion
+    div(each='{item in posts}')
+      module-post-card(content='{item}')
+    div.wrap-loading-more
+      div.f.fh
+        atom-now-loading-icon
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      .wrap-page {
+        width: 100%;
+        background: @primaryBg;
+        overflow: scroll;
+        .wrap-loading-more {
+          display: none;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.posts = [];
+    this.loadedAt = new Date();
+    this.enableLoading = true;
+    this.isLoading = false;
+
+    this.on('mount', function(){
+      
+      // Load More
+      var content = document.getElementsByTagName("content")[0];
+      content.onscroll = function(e){
+        if(window.location.hash=='#timeline'){
+          var scrollValue = this.scrollTop;
+          var scrollHeight = this.scrollHeight;
+          var offsetHeight = this.offsetHeight;
+          if(scrollValue - (scrollHeight-offsetHeight) == 0){
+            console.log("more");
+            loadPosts(10, self.loadFrom, self.loadTo);
+          }
+        }
+      }
+      
+    });
+
+    riot.mount('header', 'util-header', {status: 'normal'});
+    riot.update();
+
+
+    self.followsUids = [];
+    
+    async function loadPosts(limitNum, fromWhen, toWhen) {
+
+      if(self.enableLoading && !(self.isLoading)){
+
+        self.isLoading = true;
+        $('.wrap-loading-more').slideDown(400);
+
+        self.followsUids = await service.db.collection("follows")
+          .where("from", "==", session.user.uid)
+          .get()
+          .then(function(querySnapshot) {          
+            var uids = [];
+            querySnapshot.forEach(function(doc) {
+              var data = doc.data();
+              uids.push(data.to);
+            });
+            return uids;
+          }).catch(function(error) {
+            //logout();
+            console.log("Error getting documents: ", error);
+          });
+
+        // 自分も表示させる
+        self.followsUids.push(session.user.uid);
+
+
+        var promises = self.followsUids.map(uid =>{
+          return service.db.collection("posts")
+            .orderBy("createdAt", "desc")
+            .where("postedAs.uid", "==", uid)
+            .where("createdAt", ">", fromWhen)
+            .where("createdAt", "<", toWhen)
+            .get()
+            .then(function(querySnapshot){
+              var posts = [];
+              querySnapshot.forEach(function(doc) {
+                var post = doc.data();
+                post.docId = doc.id;
+                posts.push(post);
+              })
+              return posts;
+            });
+        })
+
+        var posts = await Promise.all(promises);
+
+        // 読み込める投稿がなくなったら
+        if(posts[0]==undefined) self.enableLoading = false;
+        
+        // とってきた配列をまとめてソートする
+        var sortedPosts = [];
+        for(var i=0; i<posts.length; i++){
+          sortedPosts = sortedPosts.concat(posts[i]);
+        }
+        sortedPosts.sort(function(a,b) {
+          return (a.createdAt < b.createdAt ? 1 : -1);
+        });
+
+        // コンポーネント用にオブジェクトを整形
+        var renderedPosts = [];
+        renderedPosts = sortedPosts.map(function(data){
+          var post = {
+            postId: data.docId,
+            iconSrc: data.postedAs.imgUrl,
+            authorId: data.author,
+            name: data.postedAs.name,
+            uid: data.postedAs.uid,
+            text: data.text.split('\n'),
+            time: moment(data.createdAt).format('ddd DD, YYYY, HH:mm'),
+          };
+          return post;
+        })
+
+        self.posts = self.posts.concat(renderedPosts);
+        self.update();
+
+        self.loadTo = new Date(self.loadTo.setDate(self.loadTo.getDate() - self.dateRange));
+        self.loadFrom = new Date(self.loadFrom.setDate(self.loadFrom.getDate() - self.dateRange));
+
+
+        if(self.posts.length < limitNum)  loadPosts(10, self.loadFrom, self.loadTo);
+
+        $('.wrap-loading-more').slideUp(400);
+
+        
+        self.isLoading = false;
+
+      } // if(self.enableLoading && !(self.isLoading))
+
+    } // loadPosts()
+
+
+
+    this.dateRange = 6;
+    this.loadTo = new Date();
+    var date = new Date();
+    this.loadFrom = new Date(date.setDate(date.getDate() - this.dateRange));
+
+    if(session.user){
+      $('#loading').fadeIn(400);
+      //loadPosts(14, this.loadedAt);
+      loadPosts(10, this.loadFrom, this.loadTo);
+    }
+
+    // 自分のlatestLoginを更新
+    service.db.collection("users")
+      .where("uid", "==", session.user.uid)
+      .limit(1)
+      .get()
+      .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+          var id = doc.id;
+          session.user.latestLogin = new Date();
+          service.db.collection("users").doc(id).set(session.user);
+        });
+      })
+      .catch(function(error) {
+          // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+
+
+  
+

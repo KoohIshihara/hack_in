@@ -1,0 +1,125 @@
+page-suggest-follow
+  div.wrap-page
+    module-suggest-follow-card(each='{item in suggestions}', content='{item}')
+
+  style(scoped, type='less').
+    :scope {
+      .wrap-page {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+      }
+    }
+
+  script.
+
+    var self = this;
+    self.suggestions = [];
+
+    this.on('mount', function(){
+      $('up-modal-content').addClass('show');
+      $('up-modal-content').scrollTop(0);
+
+      // 次の画面遷移時にフェードインを防止
+      riot.enableFadeIn = false;
+
+      // リロードも一旦防止
+      riot.enableReloadContent = false;
+
+      $(document).on("custom:closeUpmodal", function() {
+        $('up-modal-content').removeClass('show');
+        self.unmount(true);
+      });
+    });
+
+
+    async function loadSuggestions() {
+
+      $('#loadingForModal').fadeIn(400);
+
+      var uids = await service.db.collection("follows")
+        .where("from", "==", session.user.uid)
+        .get()
+        .then(function(querySnapshot) {     
+          var uids = [];
+          querySnapshot.forEach(function(doc) {
+            var data = doc.data();
+            uids.push(data.to);
+          });
+          return uids;
+        });
+      // 自分も表示しない。
+      uids.push(session.user.uid);
+
+      /*
+      if(session.isNewUser){
+        var users = await service.db.collection("users")
+          .limit(10)
+          .get()
+          .then(function(querySnapshot) {
+            var users = [];
+            querySnapshot.forEach(function(doc) {
+              var user = doc.data();
+              users.push(user);
+            });
+            return users;
+          });
+      }else{*/
+        var users = await service.db.collection("users")
+          .where("latestLogin", "<", new Date())
+          .limit(14)
+          .get()
+          .then(function(querySnapshot) {
+            var users = [];
+            querySnapshot.forEach(function(doc) {
+              var user = doc.data();
+              users.push(user);
+            });
+            return users;
+          });
+      //}
+
+
+      users = self.shuffle(users);
+
+      var showUsers = [];
+      for(var i in users){
+        if(uids.indexOf(users[i].author) == -1) showUsers.push(users[i]);
+      }
+
+      var suggestions = [];
+      riot.toFollowUids = [];
+      for(var i in showUsers){
+        var suggestObj = {
+          uid: showUsers[i].uid,
+          name: showUsers[i].name,
+          imgUrl: showUsers[i].imgUrl
+        };
+        suggestions.push(suggestObj);
+
+        riot.toFollowUids.push(showUsers[i].uid);
+      }
+
+      self.suggestions = suggestions;
+      self.update();
+
+      $('#loadingForModal').fadeOut(400);
+
+    }
+
+    loadSuggestions();
+
+
+    this.shuffle = function(array) {
+      var n = array.length, t, i;
+
+      while (n) {
+        i = Math.floor(Math.random() * n--);
+        t = array[n];
+        array[n] = array[i];
+        array[i] = t;
+      }
+
+      return array;
+    }

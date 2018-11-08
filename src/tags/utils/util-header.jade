@@ -34,6 +34,14 @@ util-header
       a(onclick='{toCreateComment}').wrap-img.f.fh
         img(src='{commentSrc}')
 
+    div(if="{status == 'ok'}").container.f.fm.flex-between
+      div
+      a(onclick='{toBackAndFollow}').f.fh
+        p.cta-active#postButton OK
+
+    div(if='label').wrap-label
+      p {label}
+
 
 
   style(scoped, type='less').
@@ -50,6 +58,7 @@ util-header
       background: @secondaryBg;
       /*filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.6));*/
       .wrap-util {
+        position: relative;
         width: 100%;
         height: 100%;
         .container {
@@ -75,7 +84,21 @@ util-header
             pointer-events: auto;
           }
         }
-      }
+
+        .wrap-label {
+          position: absolute;
+          top: 14px;
+          left: 0;
+          width: 100%;
+          pointer-events: none;
+          p {
+            width: 100%;
+            color: #2a2a2a;
+            text-align: center;
+            font-weight: 500;
+          }
+        }
+      } /* .wrap-util */
     }
 
   script.
@@ -83,7 +106,8 @@ util-header
     var self = this;
 
     this.status = opts.status;
-    console.log(this.status);
+    this.label = opts.label;
+
     this.on('mount', function(){
       if('user' in session){
 
@@ -158,6 +182,28 @@ util-header
               console.error("Error adding document: ", error);
               alert('Failed to Post');
             });
+        }
+
+
+        this.toBackAndFollow = function() {
+          riot.toFollowUids;
+          for(var i in riot.toFollowUids){
+            var followObj = {
+              from: session.user.uid,
+              to: riot.toFollowUids[i],
+              createdAt: new Date(),
+            };
+            service.db.collection("follows").add(followObj);
+          }
+          //window.history.back();
+
+          riot.enableReloadContent = true;
+          if(riot.toFollowUids.length < 4){
+            window.history.back();
+          }else{
+            window.location.href = './#timeline';
+          }
+
         }
 
 

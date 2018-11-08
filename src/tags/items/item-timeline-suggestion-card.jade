@@ -1,0 +1,55 @@
+item-timeline-suggestion-card.px8.py12.mr4
+  div.wrap-item.f.fc.flex-column
+    div.f.fc
+      a(onclick='{toAccount}').wrap-img.f.fh
+        img(src='{opts.content.imgUrl}')
+    p.name.mt8.mb12 {opts.content.name}
+    div.wrap-button.f.fc
+      atom-follow-button(uid='{opts.content.uid}')
+
+
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      display: block;
+      border: solid 0.6px rgba(0,0,0,0.2);
+      border-radius: 3px;
+      background: @primaryBg;
+      .wrap-item {
+        .wrap-img {
+          width: 60px;
+          height: 60px;
+          overflow: hidden;
+          border-radius: 50%;
+          img {
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        .name {
+          text-align: center;
+          font-size: 12px;
+        }
+        .wrap-button {
+          width: 100%;
+          atom-follow-button {
+            transform: scale(0.9);
+          }
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+    this.uid = opts.content.uid;
+
+    this.on('mount', function(){
+
+    });
+
+    this.toAccount = function() {
+      window.location.href = `./#users/${this.uid}`;
+    }

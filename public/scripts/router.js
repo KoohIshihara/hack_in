@@ -33,6 +33,7 @@ riot.route('/login', function(tagName) {
 
   riot.enableFadeIn = true;
 
+  $(document).trigger("custom:closeUpmodal");
   $(document).trigger("custom:close");
 
   if(riot.enableReloadContent){
@@ -71,6 +72,7 @@ riot.route('/global-timeline', function(tagName) {
 
   riot.enableFadeIn = true;
 
+  $(document).trigger("custom:closeUpmodal");
   $(document).trigger("custom:close");
 
   // ヘッターの中身の指定
@@ -91,12 +93,62 @@ riot.route('/global-timeline', function(tagName) {
   }
 })
 
+
+riot.route('/timeline', function(tagName) {
+
+  // モーダルから戻ってきた時にアップデートが必要なタグをアップデート
+  if(riot.needUpdateTag){
+    var root = riot.needUpdateTag.root;
+    var parentDiv = root.parentElement;
+
+    if(parentDiv){ // アカウント　＞　投稿詳細　＞　戻る　＞　戻る　でundefinedになる
+      var newElementName = 'for-update-' + Math.floor(Math.random()*100000);
+      var newElement = document.createElement(newElementName);
+      
+      parentDiv.appendChild(newElement);
+
+      riot.needUpdateTag.unmount();
+      riot.mount(newElement, 'module-post-card', {content: riot.needUpdateContent});
+    }
+
+    riot.needUpdateTag = undefined;
+    riot.needUpdateContent = undefined;
+  }
+
+  if(riot.enableFadeIn) $('content').removeClass('not-opacity');
+
+  riot.enableFadeIn = true;
+
+  $(document).trigger("custom:closeUpmodal");
+  $(document).trigger("custom:close");
+
+  // ヘッターの中身の指定
+  riot.mount('header', 'util-header', {status: 'normal'});
+  riot.update();
+
+  if(riot.enableReloadContent){
+    setTimeout(function() {
+      if(session.user){
+        console.log('reload timeline');
+        $('content').addClass('not-opacity');
+        riot.mount('content', 'page-timeline', {content: 'content'});
+        riot.update();
+      }
+    }, 400);
+  }else{
+    riot.enableReloadContent = true;
+  }
+})
+
+
+
 riot.route('/mypage', function(tagName) {
 
   if(riot.enableFadeIn) $('content').removeClass('not-opacity');
 
   riot.enableFadeIn = true;
 
+  $(document).trigger("custom:closeUpmodal");
   $(document).trigger("custom:close");
 
   // ヘッターの中身の指定
@@ -179,8 +231,27 @@ riot.route('/follower/*', function(tagName) {
 })
 
 
+// up modal
+riot.route('/suggest-follow', function(tagName) {
+
+  $(document).trigger("custom:close");
+
+  if(riot.enableReloadContent){
+    riot.mount('header', 'util-header', {
+      label: "Let's follow them",
+      status: 'ok'
+    });
+    riot.mount('up-modal-content', 'page-suggest-follow', {content: 'content'});
+    riot.update();
+  }
+})
+
+
+
 riot.route(function(tagName) {
-  location.href = './#login';
+  window.location.href = './#login';
+  
+
   /*
   if(riot.enableFadeIn) $('content').removeClass('not-opacity');
 

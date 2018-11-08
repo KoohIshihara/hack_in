@@ -1,0 +1,98 @@
+module-timeline-suggestion
+  p.suggestions.pt6.ml10 Suggestions for You
+  div.wrap-module.pl8.f.fm
+    item-timeline-suggestion-card(each='{item in cardContents}' content='{item}')
+
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      display: block;
+      width: 100%;
+      height: 188px;
+      background: @secondaryBg;
+      border-bottom: solid 0.6px rgba(0,0,0,0.2);
+      -webkit-overflow-scrolling: touch;
+      overflow-scrolling: touch;
+      .suggestions {
+        font-weight: 500;
+      }
+      .wrap-module {
+        overflow-x: scroll;
+        height: 86%;
+      }
+    }
+
+  script.
+
+    var self = this;
+    self.cardContents = [];
+
+    this.on('mount', function(){
+
+    });
+
+    async function loadSuggestions() {
+
+      var uids = await service.db.collection("follows")
+        .where("from", "==", session.user.uid)
+        .get()
+        .then(function(querySnapshot) {     
+          var uids = [];
+          querySnapshot.forEach(function(doc) {
+            var data = doc.data();
+            uids.push(data.to);
+          });
+          return uids;
+        });
+
+      // 自分も表示しない。
+      uids.push(session.user.uid);
+
+      var randomWhen = new Date();
+      var users = await service.db.collection("users")
+        .limit(40)
+        .where("latestLogin", "<", randomWhen)
+        .get()
+        .then(function(querySnapshot) {
+          var users = [];
+          querySnapshot.forEach(function(doc) {
+            var user = doc.data();
+            users.push(user);
+          });
+          return users;
+        });
+
+      users = self.shuffle(users);
+
+      var showUsers = [];
+      for(var i=0; i<users.length; i++){
+        var letPush = true;
+        for(var j=0; j<uids.length; j++){
+          if(uids[j] == users[i].author) letPush = false;
+        }
+        if(letPush) showUsers.push(users[i]);
+      }
+
+
+      if(showUsers.length<3) self.unmount();
+
+      self.cardContents = showUsers;
+      self.update();
+    }
+
+    loadSuggestions();
+
+    this.shuffle = function(array) {
+      var n = array.length, t, i;
+
+      while (n) {
+        i = Math.floor(Math.random() * n--);
+        t = array[n];
+        array[n] = array[i];
+        array[i] = t;
+      }
+
+      return array;
+    }

@@ -1,6 +1,6 @@
 atom-follow-button
   div(onclick='{action}' class='{button.status}' data-uid='{opts.uid}').wrap-atom.px7.py3.f.fm
-    i(class='{button.icon}').mr8
+    i(class='{button.icon}').mr2
     p.mt1 {button.label}
 
 
@@ -73,9 +73,9 @@ atom-follow-button
 
         var followObj = {
           from: session.user.uid,
-          fromUser: session.user,
+          //fromUser: session.user,
           to: self.opts.uid,
-          toUser: toUser,
+          //toUser: toUser,
           createdAt: new Date(),
         };
 

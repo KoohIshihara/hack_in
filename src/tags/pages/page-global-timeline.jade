@@ -1,5 +1,6 @@
 page-global-timeline
   div.wrap-page#wrapTimeline
+    module-timeline-suggestion
     div(each='{item in posts}')
       module-post-card(content='{item}')
     div.wrap-loading-more
@@ -31,7 +32,6 @@ page-global-timeline
 
     this.on('mount', function(){
       // Load More
-      //var timeline = document.getElementById("wrapTimeline")
       var content = document.getElementsByTagName("content")[0];
       content.onscroll = function(e){
         if(window.location.hash=='#global-timeline'){
@@ -102,20 +102,23 @@ page-global-timeline
 
     // サインアップ時の処理
     async function postNewUser(){
-      
-      var userExist = await service.db.collection("users")
-        .where("uid", "==", session.user.uid)
-        .limit(1)
-        .get()
-        .then(function(querySnapshot) {
-          if(querySnapshot.docs[0]){
-            return querySnapshot.docs[0].data();
-          }else{
-            return undefined;
-          }
-        });
+   
+      if(session.user){
+        var userExist = await service.db.collection("users")
+          .where("uid", "==", session.user.uid)
+          .limit(1)
+          .get()
+          .then(function(querySnapshot) {
+            if(querySnapshot.docs[0]){
+              return querySnapshot.docs[0].data();
+            }else{
+              return undefined;
+            }
+          });
+      }
 
       if(userExist != undefined) return;
+      
 
       var user = session.userFireauth;
 
@@ -181,13 +184,10 @@ page-global-timeline
 
       riot.update();
       
-    }
+    } // postNewUser()
 
-    postNewUser();
 
     if(session.isNewUser){
-
-
       postNewUser();
       session.isNewUser = false;
     }else{ // それ以外ならログインを更新
@@ -208,6 +208,33 @@ page-global-timeline
           console.error("Error updating document: ", error);
         });
     }
+
+    
+    // フォローが少なかったらsuggestを表示させて、多かったら#timelineに移動する。
+    async function responseToFollows() {
+
+      var follows = await service.db.collection("follows")
+        .where("from", "==", session.user.uid)
+        .get();
+
+      if(!(session.suggested) && follows.docs.length < 5){
+        window.location.href = './#suggest-follow';
+        session.suggested = true;
+      }else if(follows.docs.length >= 5){
+        window.location.href = './#timeline';
+      }
+
+    }
+
+    responseToFollows();
+
+
+
+
+
+
+
+
 
 
   
