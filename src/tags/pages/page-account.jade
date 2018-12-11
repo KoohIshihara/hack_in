@@ -186,7 +186,7 @@ page-account
       service.db.collection("comments")
         .where("postedAs.uid", "==", this.uid)
         .orderBy("createdAt", 'desc')
-        .limit(30)
+        .limit(50)
         .get().then(function(querySnapshot) {
           var comments = [];
           querySnapshot.forEach(function(doc) {

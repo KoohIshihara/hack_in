@@ -18,6 +18,12 @@ util-header
       a(onclick='{sendComment}').f.fh
         p.cta#postButton Reply
 
+    div(if="{status == 'create_profile'}").container.f.fm.flex-between
+      a(onclick='{toBack}').wrap-img.f.fh
+        img(src='{backSrc}')
+      a(onclick='{createProfile}').f.fh
+        p.cta#createProfileButton Create
+
     div(if="{status == 'back'}").container.f.fm.flex-between
       a(onclick='{toBack}').wrap-img.f.fh
         img(src='{backSrc}')
@@ -185,6 +191,39 @@ util-header
         }
 
 
+        // create_profile
+        this.createProfile = function() {
+          var textarea = document.getElementById('profileInput');
+          var value = textarea.value;
+          console.log(value);
+          if(value=='') return;
+
+          var text = `${session.user.currentUser.name}がプロフィールを更新しました。\n\n- \n\n ${value}`;
+
+          var profileObj = {
+            author: session.user.uid,
+            postedAs: session.user.currentUser,
+            text: text,
+            profileText: value,
+            type: 'profile',
+            imgUrls: [],
+            createdAt: new Date()
+          };
+          
+          $('#loadingForModal').fadeIn(400);
+          service.db.collection("posts").add(profileObj)
+            .then(function(docRef) {
+              console.log("Document written with ID: ", docRef.id);
+              window.history.back();
+              $('#loadingForModal').fadeOut(400);
+            })
+            .catch(function(error) {
+              console.error("Error adding document: ", error);
+              alert('Failed to Post');
+            });
+        }
+
+        // suggest_follow
         this.toBackAndFollow = function() {
           riot.toFollowUids;
           for(var i in riot.toFollowUids){

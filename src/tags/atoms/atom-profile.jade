@@ -1,0 +1,80 @@
+atom-profile
+  div.wrap-atom
+    div.wrap-profile-text.mb16
+      p {this.profileText}
+  //div.wrap-button-create-profile
+    p Create a Profile
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+
+    }
+
+  script.
+    
+    var self = this;
+
+    this.uid = opts.uid;
+    //this.profileText = 'No Prifile';
+
+    this.init = async () => {
+
+      var profileDocs = await service.db.collection("posts")
+        .where("postedAs.uid", "==", this.uid)
+        .where("type", "==", 'profile')
+        .get();
+
+      if(profileDocs.empty){
+        self.profileText = 'No Prifile';
+      }else{
+
+        var profiles = [];
+        var profilesIds = [];
+        for(var i=0; i<profileDocs.docs.length; i++){
+          profiles.push(profileDocs.docs[i].data());
+          profilesIds.push(profileDocs.docs[i].id);
+        }
+
+        var promises = profilesIds.map(postId =>{
+          return service.db.collection("alikes")
+            .where('to', '==', postId)
+            .get()
+            .then(function(querySnapshot){
+              var docs = [];
+              for(var i=0; i<querySnapshot.docs.length; i++){
+                var doc = querySnapshot.docs[i];
+                docs.push(doc);
+              }
+              return {postId: postId, num: docs.length};
+            });
+        })
+
+        postAlikes = await Promise.all(promises);
+
+        // postのalikeが一番多いのpostIdを取得
+        var maxPostAlike = postAlikes[0];
+        for(var i=0; i<postAlikes.length; i++){
+          if(maxPostAlike.num <= postAlikes[i].num){
+            maxPostAlike = postAlikes[i];
+          }
+        }
+
+        var resultProfile;
+        for(var i=0; i<profileDocs.docs.length; i++){
+          if(profileDocs.docs[i].id == maxPostAlike.postId){
+            resultProfile = profileDocs.docs[i].data();
+          }
+        }
+
+
+        self.profileText = resultProfile.profileText;
+        self.update();
+
+      } // if(profileDocs.empty)
+
+
+    } // init
+
+    this.init();

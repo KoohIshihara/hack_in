@@ -15,8 +15,13 @@ item-profile-icon(data-doc-id='{docId}')
         div.mb16.f.fc
           div.wrap-follow-follower.f.flex-around
             atom-how-many-follow(uid='{uid}')
-            //atom-how-many-follow(uid='{uid}')
         //p.profile.mb20 {this.profile}
+        div.mb16.f.fc.flex-wrap.flex-column.flex-middle
+          div.wrap-profile
+            atom-profile(uid='{uid}')
+          div.wrap-create-profile-button
+            atom-create-profile-button(uid='{uid}')
+
 
   style(scoped, type='less').
     @import "public/stylesheets/main.less";
@@ -55,6 +60,9 @@ item-profile-icon(data-doc-id='{docId}')
             .wrap-follow-follower {
               width: 240px;
             }
+            .wrap-create-profile-button {
+              display: none;
+            }
           }/* .wrap-icon-content */
         }
       }
@@ -92,6 +100,10 @@ item-profile-icon(data-doc-id='{docId}')
       }).catch(function(error) {
         console.log("Error getting documents: ", error);
       });
+
+      // create profileを見せるかどうか
+      //this.showCreateProfile = false;
+      //if(session.user.currentUser.uid == uid) this.showCreateProfile = true;
     } // if(uid)
 
     // 自分のページだったらフォローボタンは消す
@@ -99,3 +111,20 @@ item-profile-icon(data-doc-id='{docId}')
       this.showFollow = false;
       this.update();
     }
+
+
+
+    this.on('mount', function(){
+
+      if(session.user && session.user.currentUser.uid == self.uid){
+        $('.wrap-create-profile-button').show();
+      }
+
+    });
+    
+
+
+
+
+
+

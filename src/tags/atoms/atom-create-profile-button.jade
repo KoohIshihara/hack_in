@@ -1,0 +1,27 @@
+atom-create-profile-button
+  div.wrap-atom
+    p(onclick='{toCreateProfile}') Edit Profile
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      .wrap-atom {
+        p {
+          text-align: center;
+          color: @ctaColor;
+          font-weight: bold;
+          border-bottom: solid 1px;
+        }
+      }
+    }
+
+  script.
+    
+    var self = this;
+
+    this.uid = opts.uid;
+    
+    this.toCreateProfile = function(){
+      window.location.href = `./#create-profile/${self.uid}`;
+    }

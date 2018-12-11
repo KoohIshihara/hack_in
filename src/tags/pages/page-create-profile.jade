@@ -1,0 +1,73 @@
+page-create-profile
+  div.wrap-page.f
+    div.wrap-img
+      div.img
+        img(src='{iconSrc}')
+    textarea(placeholder="{opts.placeholder}", onkeyup="{checkLetCreateProfile}")#profileInput
+
+  style(scoped, type='less').
+    @import "public/stylesheets/main.less";
+    @import "public/stylesheets/theme.less";
+    :scope {
+      .wrap-page {
+        width: 100%;
+        height: 50%;
+        background: @primaryBg;
+        .wrap-img {
+          padding: 16px 0 0 16px;
+          height: 60%;
+          .img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            overflow: hidden;
+            img {
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+        }
+        textarea {
+          width: 100%;
+          height: 100%;
+          padding: 16px;
+          outline: none;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.iconSrc = session.user.currentUser.imgUrl;
+
+    this.on('mount', function(){
+
+      $('modal-content').addClass('show');
+      $('modal-content').scrollTop(0);
+
+      // 次の画面遷移時にフェードインを防止
+      riot.enableFadeIn = false;
+
+      $(document).on("custom:close", function() {
+        $('modal-content').removeClass('show');
+        self.unmount(true);
+      });
+
+      var textarea = document.getElementById('profileInput');
+      textarea.focus();
+
+      var button = document.getElementById('createProfileButton');
+      this.checkLetCreateProfile = function(e) {
+        var value = e.target.value;
+        if(value == ''){
+          button.classList.remove('cta-active');
+        }else{
+          button.classList.add('cta-active');
+        }
+      }
+
+      riot.enableReloadContent = false;
+
+    });

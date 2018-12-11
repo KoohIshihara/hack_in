@@ -219,6 +219,11 @@ page-global-timeline
 
       if(!(session.suggested) && follows.docs.length < 5){
         window.location.href = './#suggest-follow';
+        riot.mount('header', 'util-header', {
+          label: "Let's follow them",
+          status: 'ok'
+        });
+        riot.update();
         session.suggested = true;
       }else if(follows.docs.length >= 5){
         window.location.href = './#timeline';

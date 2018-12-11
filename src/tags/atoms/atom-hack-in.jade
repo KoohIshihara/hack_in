@@ -91,6 +91,12 @@ atom-hack-in(data-uid='{opts.uid}')
           console.log("Error getting documents: ", error);
         });
 
+
+      if(session.user.currentUser.uid == opts.uid){
+        $('.wrap-create-profile-button').show();
+      }
+      
+
       // 自分のcurrentUserを更新
       await service.db.collection("users")
         .where("uid", "==", session.user.uid)
@@ -185,6 +191,10 @@ atom-hack-in(data-uid='{opts.uid}')
           console.error("Error updating document: ", error);
         });
 
+
+      if(session.user.uid != opts.uid){
+        $('.wrap-create-profile-button').hide();
+      }
     }
 
 

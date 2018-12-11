@@ -50,10 +50,12 @@ module-timeline-suggestion
       // 自分も表示しない。
       uids.push(session.user.uid);
 
-      var randomWhen = new Date();
+      var date = new Date();
+      date.setDate(date.getDate() - 10);
+      //var randomWhen = new Date();
       var users = await service.db.collection("users")
         .limit(40)
-        .where("latestLogin", "<", randomWhen)
+        .where("latestLogin", ">", date)
         .get()
         .then(function(querySnapshot) {
           var users = [];

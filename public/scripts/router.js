@@ -218,6 +218,17 @@ riot.route('/create-comment/*', function(postId) {
   riot.update();
 })
 
+riot.route('/create-profile/*', function(uid) {
+  riot.mount('header', 'util-header', {
+    status: 'create_profile',
+    uid: uid
+  });
+  riot.mount('modal-content', 'page-create-profile', {
+    placeholder: "His or her new profile",
+  });
+  riot.update();
+})
+
 riot.route('/follow/*', function(tagName) {
   riot.mount('header', 'util-header', {status: 'back_with_edit'});
   riot.mount('modal-content', 'page-follow', {uid: tagName});
@@ -237,12 +248,14 @@ riot.route('/suggest-follow', function(tagName) {
   $(document).trigger("custom:close");
 
   if(riot.enableReloadContent){
-    riot.mount('header', 'util-header', {
-      label: "Let's follow them",
-      status: 'ok'
-    });
-    riot.mount('up-modal-content', 'page-suggest-follow', {content: 'content'});
-    riot.update();
+    setTimeout(function() {
+      riot.mount('header', 'util-header', {
+        label: "Let's follow them",
+        status: 'ok'
+      });
+      riot.mount('up-modal-content', 'page-suggest-follow', {content: 'content'});
+      riot.update();
+    },400);
   }
 })
 
